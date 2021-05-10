@@ -1,4 +1,4 @@
-# Création d'un nouveau projet avec Maven
+# Maven et intégration continue
 
 Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 

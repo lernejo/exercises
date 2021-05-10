@@ -1,4 +1,4 @@
-# API HTTP : production et consommation
+# API HTTP avec Spring : production et consommation
 
 > Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 
