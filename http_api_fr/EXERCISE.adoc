@@ -63,7 +63,7 @@ image::schema.png[]
 
 == Partie 1 - Création de la structure du projet Java et mise ne place de la CI
 
-* Reprendre les partie 1 à 4 de l’exercice link:../maven_fr/EXERCISE.md[Maven et intégration continue].
+* Reprendre les partie 1 à 4 de l’exercice link:../maven_fr/EXERCISE.adoc[Maven et intégration continue].
 * Créer la classe `fr.lernejo.navy_battle.Launcher` contenant une fonction `main`, ce sera le point d’entrée unique de notre programme
 
 == Partie 2 - Serveur HTTP
