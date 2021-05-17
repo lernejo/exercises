@@ -246,7 +246,7 @@ constituée des étapes suivantes :
 == Partie 5 - Code coverage
 
 * Dans le fichier *pom.xml* ajouter
-* les trois properties suivantes
+* les quatre properties suivantes
 [source,xml]
 ----
 <properties> <!-- balise existante -->
