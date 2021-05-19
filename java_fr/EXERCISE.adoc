@@ -122,7 +122,7 @@ Les méthodes `next...` de la classe `Scanner` autres que `nextLine`, telles que
 
 ## Partie 5 - une seconde commande
 
-L’objectif est de créer un programme permettant à l’utilisateur de connaitre, au sein d’un texte qu’il propose au programme, les 3 mots les plus utilisés par ligne dans ce texte. 
+L’objectif est de créer un programme permettant à l’utilisateur de connaitre, au sein d’un texte qu’il propose au programme, les 3 mots les plus utilisés dans ce texte. 
 * Ajouter la possibilité de taper la commande **freq** qui demandera alors un chemin de fichier à l’utilisateur avec une question explicite
 * Essayer de lire le contenu du fichier grâce à la méthode statique utilitaire `java.nio.file.Files.readString` prenant en paramètre un objet de type `Path`.
 Un tel objet peut être construit grâce à la méthode statique `Paths.get` prenant en paramètre un chemin de fichier
