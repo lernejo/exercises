@@ -1,0 +1,258 @@
+= Multi-module Maven et Reflexion
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+endif::[]
+
+:hardbreaks-option:
+
+Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+
+L’objectif de cet exercice est de créer un framework de test minimaliste qui saura découvrir et lancer des méthodes de test sur un code qui n’est pas connu à l’avance.
+Pour cela nous allons manipuler la reflexion, un outil permettant à du code, de lire... du code.
+
+== Partie 1 - Premier commit
+
+* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom *maven_training_2* initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Cloner ce nouveau dépôt en utilisant l'*url SSH*
+* La branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
+* Ajouter un fichier *.editorconfig* et *.gitignore* à la racine du dépôt avec le contenu pertinent (cf link:../maven_fr/EXERCISE.adoc[Maven et intégration continue])
+* Faire un commit contenant ces deux fichiers avec le message **Setup project layout**
+* Pusher ce nouveau commit (sur votre remote par défaut, en l’occurrence GitHub)
+
+== Partie 2 - Structure multi-module
+
+Un projet _multi-module_ est un projet contenant plusieurs modules, c’est-à-dire plusieurs fichiers **pom.xml**.
+Le fichier **pom.xml** à la racine du dépôt sera le _parent_ des fichiers **pom.xml** des modules.
+Les modules peuvent avoir des dépendances les uns vers les autres, Maven inférera l’ordre de construction afin de respecter ces dépendances (sauf en cas de dépendance cyclique).
+
+* Générer la structure de base d'un projet Maven avec IntelliJ : **File** -> **New** -> **Project...** -> sélectionner **Maven**, puis spécifier
+** le **nom** du projet qui sera également l’**artifactId** : `lernejo-tester-reactor`
+** le **groupId** : `fr.lernejo`
+** laisser la version par défaut `1.0-SNAPSHOT`
+
+* Créer un premier module en faisant un clic-droit sur le projet, puis **New** -> **Module...**, sélectionner **Maven** et spécifier le nom **lernejo-tester**
+
+* &#x1F4D8; Le fichier **pom.xml** racine a été modifié comme suit :
+
+[source,xml]
+----
+<project>
+    <!-- ... -->
+    <packaging>pom</packaging> <!--1-->
+
+    <modules> <!--2-->
+        <module>lernejo-tester</module>
+    </modules>
+    <!-- ... -->
+</project>
+----
+<1> Indique que le projet construit uniquement un fichier **pom.xml** (et non une archive contenant du code compilé)
+<2> Liste des modules qui seront construits si on lance la construction du module racine
+
+[NOTE]
+====
+Le fichier **pom.xml** des modules contient une nouvelle balise `<parent>` contenant les coordonnées du POM racine.
+
+Par ailleurs, ces fichiers ne contiennent pas les balises `<groupId>` et `<version>` qui sont héritées du POM _parent_.
+====
+
+
+* Créer un second module Maven de nom : **sample**
+* Créer un profil d’`ID` **with-tests** dans le POM racine en se servant de l’autocomplétion d’IntelliJ et y déplacer ce nouveau module
+
+[NOTE]
+====
+Les profils sont un moyen de conditionner des morceaux de configuration, afin de déclencher des comportements différents sur un même projet.
+====
+
+* &#x1F4D8; La commande `mvn compile` travaillera sur les deux modules : racine et **lernejo-tester**
+* &#x1F4D8; La commande `mvn compile -P with-tests` travaillera sur les trois modules : racine, **lernejo-tester** et **sample**
+
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 3 - Api du framework
+
+* Dans le module **lernejo-tester**, créer un package `fr.lernejo.tester.api`
+* Dans ce package créer une annotation `TestMethod`
+
+[TIP]
+====
+Une annotation se présente un peu comme une `interface`, mais le mot clé est `@interface`.
+====
+
+* Annoter cette annotation avec :
+
+[source,java]
+----
+@Retention(RetentionPolicy.RUNTIME) // <1>
+@Target(ElementType.METHOD) // <2>
+----
+<1> Cette annotation sera conservée à la compilation, sans ça, elle aurait été enlevée par le compilateur et ne serait pas disponible dans le _bytecode_
+<2> Cette annotation ne sera utilisable que sur des méthodes
+
+* Dans les sources de test de ce même module, créer une classe `fr.lernejo.tester.SomeLernejoTests`, contenant trois méthodes `public` `void` et sans paramètres : `ok` et `ko` et `none`
+* La première et la troisième ne feront rien, et la seconde lancera une `java.lang.IllegalStateException`
+* Annoter les deux premières avec notre annotation `TestMethod`
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 4 - Lister les méthodes de test
+
+L'annotation que nous venons de créer est une annotation de _marquage_. Elle va permettre au framework de différencier les méthodes _de test_ des autres méthodes.
+
+* Créer dans les sources principales la classe `fr.lernejo.tester.internal.TestClassDescription`, celle-ci aura :
+** un constructeur qui prendra en paramètre un objet de type `Class<?>`
+** une méthode `listTestMethods` qui ne prendra pas de paramètres et renverra un objet de type `List<Method>`
+* Coder le contenu de la méthode `listTestMethods` de sorte que renvoie toutes les méthodes `public`, `void`, sans paramètres et annotées avec `TestMethod`.
+
+[TIP]
+====
+Les classes `Class` et `Method` se trouve dans le package `java.lang.reflect`.
+Pour obtenir un objet de type `Class`, on peut par exemple écrire `Class<SomeLernejoTests> testClass = SomeLernejoTests.class;`.
+Pour lister les méthodes directes d'une classe, on peut utiliser la méthode `getDeclaredMethods` disponible sur un objet de type `Class`.
+La visibilité d'une entité est disponible (entre autres caractéristiques) dans les _modifiers_ de celle-ci.
+Ainsi pour savoir si une méthode est `static`, on utilise : `Modifiers.isStatic(myMethod.getModifiers())`
+====
+
+* Coder le test de cette méthode la classe `TestClassDescriptionLernejoTests` dans le même package mais dans les sources de test
+* &#x1F4D8; En passant comme paramètre notre test `SomeLernejoTests`, le résultat devrait être une liste de deux méthodes : `ok` et `ko`
+* En attendant d'avoir une solution pour lancer nos tests, créer une fonction `main` dans `TestClassDescriptionLernejoTests` pour lancer vos méthodes de tests
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 5 - Lister les classes d'un package
+
+Java ne fourni pas de mécanismes direct pour lister les classes dans un _package_ du fait de la nature dynamique des classloaders.
+Les classloaders sont les objets qui vont chercher les classes dans le _classpath_ afin de les charger en mémoire pour s'en servir (`new` ou usage statique) par la suite.
+Les classloaders chargent uniquement les classes qui leurs sont demandées et ne peuvent pas connaître une classe tant qu'elle n'a pas été chargée explicitement une première fois.
+Une classe est chargée quand elle est référencée dans un code exécuté.
+On peut également charger une classe en appelant la méthode `Class#forName` en passant un chemin qualifié.
+
+La technique ici pour lister toutes les classes d'un package est donc d'aller ouvrir tous les éléments disponibles dans le classpath.
+
+Cette opération est fastidieuse (consiste à ouvrir tous les élèments du classpaths, *.class ou *.jar), et nous allons utiliser pour ce faire une bibliothèque tierce.
+
+* Ajouter dans le POM parent la section suivante :
+
+[source,xml]
+----
+<dependencyManagement>  <!--1-->
+    <dependencies>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflections.version}</version>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+<1> Cette section définie la version (et optionnellement le _scope_) d'une dépendance qui sera utilisée dans un sous-module en référençant uniquement `groupId` et `artifactId`. Ainsi la gestion de version est concentré en un unique endroit.
+
+<<<
+
+* Ajouter également la propriété `<reflections.version>` avec comme valeur la dernière version de la bibliothèque en question (disponible sur https://mvnrepository.com)
+* Ajouter cette dépendance (sans la version) dans le module **lernejo-tester**
+* Créer une classe `fr.lernejo.tester.internal.TestClassDiscoverer` qui prendra en paramètre de constructeur une `String` qui sera le nom d'un package
+* Ajouter une méthode `listTestClasses` qui retournera une `List<TestClassDescription>`
+
+[TIP]
+====
+Pour récupérer tous les types d'un package avec la bibliothèque **reflections**, utiliser le code suivant :
+
+[source,java]
+-----
+Reflections reflections = new Reflections("my.package", new SubTypesScanner(false));
+Set<Class<?>> allTypes = reflections.getSubTypesOf(Object.class);
+-----
+====
+
+* La méthode `listTestClasses` doit retourner une liste contenant les `TestClassDescription` de classes contenant au moins un test (une méthode marquée avec `TestMethod`) du package passé en paramètre et dont le nom fini par `LernejoTests`
+* Ajouter un nouveau test `TestClassDiscovererLernejoTests` qui vérifie qu'en passant le _package_ `fr.lernejo.tester` on récupère bien trois éléments correspondants aux trois classes de test écrites jusqu'à présent
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 6 - Exécuter les tests
+
+* Créer une classe `fr.lernejo.tester.TestRunner` contenant une méthode `main`
+* Cette devra
+** considérer [.underline]#les# paramètres passés en paramètres comme des packages
+** lister les classes contenant des méthodes de test dans ces packages
+** lancer chaque méthode de test
+** afficher dans la console :
+ * une ligne par méthode de test avec dans cette ligne :
+  * le nom qualifié de la méthode de test (par exemple fr.lernejo.sample.MyLernejoTests#ok)
+  * OK ou KO si une exception est levée pendant l'exécution de cette méthode
+  * la durée d'exécution en millisecondes (par ex : 37 ms)
+** une ligne vide
+** une ligne résumant le nombre de tests lancés, le nombre de tests échoués et le temps total d'exécution
+
+[TIP]
+====
+Une méthode est exécutée sur un objet.
+Il est donc nécessaire de créer un nouvel objet du type d'une classe de test avant de pouvoir appeler une méthode sur celui-ci.
+Le mot clé `new` ne fonctionne qu'avec des classes déterminées à l'avance.
+Pour créer un objet à partir de sa classe, utiliser le code suivant : `Object testInstance = testClass.getConstructor().newInstance();`
+
+Pour exécuter une méthode sur une instance : `myMethod.invoke(testInstance);`
+
+Dans le cas où la méthode cible lance une exception, la méthode `invoke` lancera une `InvocationTargetException` dont la cause sera l'exception originale.
+====
+
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 7 - Dogfooding
+
+* Supprimer les différentes méthodes `main` pour lancer les tests
+* Ajouter le plugin **exec-maven-plugin** (https://www.mojohaus.org/exec-maven-plugin/java-mojo.html[documentation officielle]) et le configurer pour :
+** qu'il déclenche une exécution du _goal_ **java** à la phase **test** avec la classe _main_ `fr.lernejo.tester.TestRunner`
+** qu'il utilise le scope **test** (cf `<classpathScope>`)
+** qu'il passe `fr.lernejo` comme seul paramètre au programme
+* &#x1F4D8; En lançant `mvn test`, le runner détecte et exécute les différents tests écrits
+* Faire un commit de ces changements et l’envoyer sur GitHub
+
+== Partie 8 - Test en conditions réelles
+
+* Dans le module **sample** ajouter en dépendance le module **lernejo-tester** avec le scope test; pour la version, il est possible d'utiliser la variable `${project.version}` car les deux modules partagent la version du parent
+* Ajouter les classes suivantes dans les sources principales
+
+.Fichier com/bidule/Fact.java
+[source,java]
+----
+package com.bidule;
+
+public class Fact {
+    public int fact(int n) {
+        if (n < 0) {
+            throw new IllegalArgumentException("N cannot be negative");
+        }
+        return n == 0 ? 1 : n * fact(n - 1);
+    }
+}
+----
+
+.Fichier fr/chose/Stats.java
+[source,java]
+----
+package fr.chose;
+
+import java.util.stream.IntStream;
+
+public record Stats(int min,
+                    int max,
+                    int sum,
+                    double avg) {
+
+    public static Stats of(int... numbers) {
+        int sum = IntStream.of(numbers).sum();
+        return new Stats(
+                IntStream.of(numbers).min().orElse(0),
+                IntStream.of(numbers).max().orElse(0),
+                IntStream.of(numbers).sum(),
+                IntStream.of(numbers).average().orElse(0));
+    }
+}
+----
+
+* Configurer le plugin **exec-maven-plugin** pour qu'il passe les packages `com.bidule` et `fr.chose` en paramètre de `TestRunner`
+* Coder les tests nécessaires à vérifier le bon fonctionnement de ces deux classes
+* &#x1F4D8; En lançant `mvn test -P with-tests`, le runner détecte et exécute les différents tests écrits (les nouveaux et les anciens)
+* Faire un commit de ces changements et l’envoyer sur GitHub
