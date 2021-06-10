@@ -67,7 +67,7 @@ La note ne tiendra pas compte de cette partie.
 * cloner ce nouveau dépôt en utilisant l'url SSH
 * la branche par défaut est la branche `main` c'est sur celle-ci que nous allons travailler
 
-## Partie 1 - Création de la structure du projet Java et mise ne place de la CI (15 min)
+## Partie 1 - Création de la structure du projet Java et mise en place de la CI (15 min)
 
 Les archetypes Maven sont des templates de projet qui permettent de commencer rapidement à coder sans avoir à construire
 le pom.xml et les différentes parties qui composent un nouveau projet.
