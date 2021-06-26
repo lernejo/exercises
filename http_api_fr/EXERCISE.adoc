@@ -206,7 +206,7 @@ Par exemple :
     "shipLeft": true // <2>
 }
 ----
-<1> la cellule ciblée était la dernière partie d’un bateau non touché, la réponse indique donc que le bateau est maintenant coulé
+<1> la cellule ciblée était la dernière partie d’un bateau touché, la réponse indique donc que le bateau est maintenant coulé
 <2> il reste d’autres bateaux sur la mer, la partie continue
 
 == Partie 6 - Implémentation de la logique
