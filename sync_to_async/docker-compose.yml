@@ -1,0 +1,64 @@
+version: "3.9"
+volumes:
+    prometheus:
+    grafana:
+services:
+    rabbitmq:
+        # https://hub.docker.com/_/rabbitmq
+        image: rabbitmq:3.9.7-management-alpine
+        container_name: 'rabbitmq'
+        ports:
+            - 5672:5672
+            - 15672:15672 # Management
+            - 15692:15692 # Prometheus
+
+    # login : postgres/example
+    postgresql:
+        # https://hub.docker.com/_/postgres?tab=description
+        image: postgres:14.0-alpine
+        container_name: 'postgres'
+        ports:
+            - 5432:5432
+        environment:
+            POSTGRES_PASSWORD: example
+
+    adminer:
+        # https://hub.docker.com/_/adminer?tab=tags
+        image: adminer:4.8.1-standalone
+        container_name: 'adminer'
+        ports:
+            - 8080:8080
+        restart: always
+
+    prometheus:
+        # https://hub.docker.com/r/prom/prometheus/tags
+        image: prom/prometheus:v2.30.3
+        container_name: 'prometheus'
+        ports:
+            - 9090:9090
+        volumes:
+            - prometheus:/prometheus
+            - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+    # login : guest/guest
+    grafana:
+        # https://hub.docker.com/r/grafana/grafana/tags
+        image: grafana/grafana:8.2.1
+        container_name: 'grafana'
+        ports:
+            - 3000:3000
+        volumes:
+            - grafana:/var/lib/grafana
+            - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+            - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+            - ./grafana/dashboards:/dashboards
+        environment:
+            # https://grafana.com/plugins/flant-statusmap-panel
+            # https://grafana.com/plugins/grafana-piechart-panel
+            GF_INSTALL_PLUGINS: "flant-statusmap-panel,grafana-piechart-panel"
+
+    front:
+        build : ./front
+        container_name: 'front'
+        ports:
+            - 8082:8082
