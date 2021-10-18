@@ -1,0 +1,301 @@
+= Découplage des objects
+:hardbreaks-option:
+
+Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+
+La correction sera automatique, prenez donc soin de respecter les indications les plus précises, sinon pas de point.
+
+Ici nous allons créer un simple jeu ou le joueur devra deviner le nombre choisi par l’ordinateur’.
+L’objectif de cet exercice est de prendre en main le concept de découplage en manipulant des interfaces ainsi que leurs implémentations
+
+== Prérequis
+
+* Installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* (Sur Windows, avoir un terminal POSIX type **Git Bash**, la suite de l’exercice est à faire dans celui-ci)
+* Configurer Git avec votre nom et email
+** `git config --global user.name "John Doe"`
+** `git config --global user.email johndoe@example.fr`
+* Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
+
+* Installer Java 17 (cf https://adoptium.net/)
+* &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
+
+* installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
+
+== Partie 0 - Repository GitHub
+
+* créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **decouplig_java_training** initialisé avec un fichier
+README.md (case à cocher dans le formulaire de création de dépôt)
+* cloner ce nouveau dépôt en utilisant l’url SSH
+* la branche par défaut est la branche `main` c’est sur celle-ci que nous allons travailler
+
+== Partie 1 - Création de la structure du projet Java et mise ne place de la CI
+
+* Reprendre les partie 1 à 4 de l’exercice link:../maven_fr/EXERCISE.adoc[Maven et intégration continue].
+
+== Partie 2 - Création d’un Logger
+
+Ce qu’on appelle couramment *Logger* est un objet qui a la responsabilité de produire le journal applicatif.
+Ce journal, qu’il soit dans la console ou dans un fichier permet de comprendre ce que fait le programme au travers de messages, qu’ils soient :
+- critiques (ex : le serveur distant n’est plus joignable)
+- informatifs (ex : tel utilisateur a fait telle opération)
+- de "debug" (ex : la requête au serveur distant a pris 39ms)
+
+//-
+
+* Pour commencer, créer un package spécifique : `fr.lernejo.logger`.
+
+[NOTE]
+====
+Un package est une succession de répertoires depuis le répertoire "racine" des sources (conventionnellement *src/main/java* dans un projet Maven).
+Ici :
+
+[source]
+----
+.
++-- src/
+|  +-- main/
+|  |   +-- java/
+|  |       +-- fr/
+|  |           +-- lernejo/
+|  |               +-- logger
+|  |                   +-- (*.java)
++-- pom.xml
+----
+
+Tous les fichiers Java dans un package donné comportent comme première ligne la déclaration du package dans lequel ils sont :
+
+[source,java]
+----
+package fr.lernejo.logger;
+
+// Suite du fichier (class, enum ou interface)
+----
+====
+
+* Dans ce package, créer une interface `Logger` avec une seule méthode abstraite :
+
+[source,java]
+----
+void log(String message);
+----
+
+* Créer ensuite une classe `ConsoleLogger` implémentant `Logger` et affichant le `message` passé en paramètre dans la console en utilisant `System.out`.
+
+[NOTE]
+====
+Implémenter une interface revient à la déclarer dans la classe. Pour un objet `Dog` implémentant l’interface `Pet` :
+[source,java]
+----
+public class Dog implements Pet {
+    // contenu de la classe (attributs, méthodes)
+}
+----
+====
+
+* Créer enfin une classe `LoggerFactory` ayant une méthode publique et statique `getLogger(String name)` retournant un objet de type `Logger` (c’est-à-dire implémentant l’interface `Logger`).
+
+Dans un premier temps, le paramètre `name` ne servira à rien.
+
+* Indexer et commiter les fichiers nouvellement créés
+
+== Partie 3 - Modélisation d’un jeu : l’age du capitaine
+
+Le jeu ici sera de deviner un nombre que l’ordinateur aura choisi.
+Le joueur aura un retour après chaque tentative : plus grand ou plus petit.
+
+* Dans un package `fr.lernejo.guessgame` créer l’interface `Player`.
+Cette dernière aura les méthodes suivantes :
+
+[source,java]
+----
+long askNextGuess();
+
+/**
+ * Called by {@link Simulation} to inform that the previous guess was lower or greater that the number to find.
+ */
+void respond(boolean lowerOrGreater);
+----
+
+* Créer une première implémentation qui permettra l’interfaçage avec un utilisateur humain (IHM, pour Interface Homme Machine) `HumanPlayer`.
+Cette classe utilisera :
+- D’une part une instance de `Logger` donnée par `LoggerFactory` avec l’argument `"player"`
+- D’autre part la classe `java.util.Scanner` de Java permettant de récupérer les entrées de l’utilisateur dans la console
+
+* Créer une classe `Simulation` telle que:
+
+[source,java]
+----
+public class Simulation {
+
+  private final Logger logger = LoggerFactory.getLogger("simulation");
+  private final ??? player;  //TODO add variable type
+  private ??? numberToGuess; //TODO add variable type
+
+  public Simulation(Player player) {
+    //TODO implement me
+  }
+
+  public void initialize(long numberToGuess) {
+    //TODO implement me
+  }
+
+  /**
+   * @return true if the player have guessed the right number
+   */
+  private boolean nextRound() {
+    //TODO implement me
+    return false;
+  }
+
+  public void loopUntilPlayerSucceed() {
+    //TODO implement me
+  }
+}
+----
+
+* Le constructeur permettra de renseigner les champs `private` qui seront utilisés à chaque tour de jeu.
+La méthode `nextRound` devra :
+** Demander un nombre au joueur
+** Vérifier s’il est égal, plus grand ou plus petit
+** S’il est égal, retourner `true`
+** Sinon, donner l’indice (plus grand ou plus petit) au joueur et retourner `false`
+** Dans tous les cas, afficher via `logger` les informations permettant de suivre l’évolution de la partie
+
+* La méthode `loopUntilPlayerSucceed` devra utiliser une boucle afin d’appeler `nextRound` jusqu’à ce que la partie soit finie.
+
+* Créer enfin une classe `Launcher` avec une méthode statique `main` qui
+** Créera une nouvelle instance de `Simulation` avec un joueur `HumanPlayer`
+** Initialisera cette instance avec un nombre aléatoire, généré par la classe `java.security.SecureRandom`
+
+[source,java]
+----
+SecureRandom random = new SecureRandom();
+// long randomNumber = random.nextLong(); // génère un nombre entre Long.MIN_VALUE et Long.MAX_VALUE
+long random Number = random.nextInt(100); // génère un nombre entre 0 (inclus) et 100 (exclus)
+----
+** Lancera une partie en appelant la méthode `loopUntilPlayerSucceed`
+
+// -
+
+* Indexer et commiter les fichiers nouvellement créés
+
+== Partie 4 - Création d’un utilisateur robot
+
+Le but de cet exercice est de créer une seconde implémentation de `Player` : `ComputerPlayer`.
+Cette nouvelle classe aura la même *fonction* que `HumanPlayer`, mais sans demander à l’utilisateur quoi que ce soit.
+
+L’algorithme de recherche par dichotomie pouvant ne pas converger du premier coup, nous allons ajouter une sécurité.
+
+* Modifier dans la classe `Simulation` la méthode `loopUntilPlayerSucceed` afin que celle-ci prenne en paramètre un nombre qui sera le maximum d’itérations de la boucle.
+Cette même méthode devra également afficher à la fin de la partie le temps que celle-ci a pris au format `mm:ss.SSS` et si oui ou non le joueur a trouvé la solution avant la limite d’itération.
+
+Récupérer un timestamp se fait avec le code `System.currentTimeMillis()`.
+La valeur retournée correspond au nombre de millisecondes entre le 1er Janvier 1970 et le moment où la fonction est appelée.
+
+* Modifier la classe `Launcher` afin que celle-ci gère 3 cas par rapport aux paramètres passés en ligne de commande (`String[] args`):
+** Si le premier argument vaut `-interactive`, alors utiliser la précédente façon de lancer le programme avec un `HumanPlayer` avec une limite d’itérations valant `Long.MAX_VALUE`
+** Si le premier argument vaut `-auto` et le second argument est numérique, alors
+*** Créer une nouvelle instance de `Simulation` avec un joueur `ComputerPlayer`
+*** Initialiser cette instance avec le nombre donné comme second argument
+*** Lancer une partie en appelant la méthode `loopUntilPlayerSucceed` et avec comme limite d’itération 1000
+** Sinon afficher les deux "façons" de lancer le programme décrites ci-dessus afin de guider l’utilisateur
+
+* Enfin, implémenter les méthodes de la classe `ComputerPlayer` afin que la recherche de l’age du capitaine converge vers la solution.
+* Indexer et commiter les fichiers nouvellement créés
+
+== Partie 5 - Simplification des messages de log
+
+À ce stade, des messages de logs provenant des classes `Launcher`, `Simulation`, `HumanPlayer` et `ComputerPlayer` se mélangent dans la console sans moyen de les distinguer.
+
+* Créer dans le package `fr.lernejo.logger` une nouvelle classe `ContextualLogger` implémentant `Logger`, qui prendra le nom d’une classe, ainsi qu’un autre `Logger` en paramètres de constructeur.
+Le but de ce `Logger` sera d’enrichir le message avec la date courante et le nom de la classe appelante.
+
+Il est nécessaire pour cela d’utiliser la classe  `java.time.format.DateTimeFormatter` avec un pattern tel que `"yyyy-MM-dd HH:mm:ss.SSS"`.
+La méthode `log` de cette implémentation devra elle-même appeler la méthode `log` de l’objet `Logger` passé par construction.
+
+[source,java]
+----
+public void log(String message) {
+  delegateLogger.log(LocalDateTime.now().format(formatter) + " " + callerClass + " " + message);
+}
+----
+
+* Modifier la classe `LoggerFactory` pour qu’elle produise une instance de `Logger` qui produira des messages enrichis dans la Console.
+
+* Lancer le programme et vérifier que les messages apparaissent bien datés et avec la classe d’origine
+
+En procédant ainsi on *compose* les objets `Logger` sans modifier leur comportement interne.
+Il est alors plus simple de remplacer, `ConsoleLogger` par un objet de type `FileLogger` qui ajouterai les messages dans un fichier tout en gardant le même enrichissement de message.
+
+* Écrire la classe `FileLogger` en utilisant le code ci-dessous :
+
+[source,java]
+----
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class FileLogger implements Logger {
+    private final Path path;
+
+    public FileLogger(String pathAsString) {
+        path = Paths.get(pathAsString).toAbsolutePath();
+    }
+
+    public void log(String message) {
+        try {
+            Files.write(path, (message + "\n").getBytes(), APPEND, CREATE);
+        } catch (IOException e) {
+            throw new RuntimeException("Cannot write log message to file [" + path + "]", e);
+        }
+    }
+}
+----
+
+* Modifier le code de `LoggerFactory` afin que les messages soient produits dans un fichier sur le disque
+
+* Lancer le programme et vérifier que les messages apparaissent bien datés et avec la classe d’origine dans le fichier spécifié dans la classe `LoggerFactory`
+* Indexer et commiter les fichiers nouvellement créés
+
+== Partie 6 - Composition de plusieurs Loggers
+
+Ajouter les messages dans un fichier est pratique pour comprendre ce qui s’est passé a posteriori, cependant ce n’est pas pratique pour le développement.
+Nous allons donc combiner les deux loggers précédents en un seul.
+
+* Créer une nouvelle classe `CompositeLogger` implémentant `Logger`
+Cette classe aura un constructeur prenant deux `Logger` en paramètres.
+La méthode `log` appellera successivement `log` sur les deux `Logger` renseignés par construction.
+
+* Modifier la classe `LoggerFactory` pour qu’elle renvoie un seul `Logger` écrivant les messages à la fois dans la Console et dans un fichier.
+* Indexer et commiter les fichiers nouvellement créés
+
+== Partie 7 - Encore plus de composition
+
+Afin d’y voir plus clair dans le diagnostic d’un comportement au travers d’un fichier de log, il peut être utile de filtrer certains messages afin de ne garder que ceux qui ont de l’intérêt.
+Nous allons donc filtrer les messages provenant des classes implémentant `Player` pour le `FileLogger`.
+
+* Créer une classe `FilteredLogger` implémentant `Logger` qui aura un constructeur avec deux paramètres :
+
+[source,java]
+----
+public FilteredLogger(Logger delegate, Predicate<String> condition) {
+  //TODO assign arguments to fields
+}
+----
+
+* Implémenter la méthode log en testant si la condition valide le message donné en paramètre.
+Si la condition est vérifiée, appeler le `Logger` delegate avec le même paramètre.
+
+L’interface `java.util.function.Predicate` modélise une condition sur un objet dont le type est spécifié entre chevron (ici `String`).
+Il est possible de l’implémenter de deux façons :
+- avec une classe implémentant l’interface `Predicate`
+- avec une lambda, ex: `Predicate<String> condition = message -> !message.contains("player");`.
+Tous les messages qui ne contiennent pas le mot `"player"` valident cette condition.
+
+* Modifier la classe `LoggerFactory` pour qu’elle produise un `Logger` qui affichera tous les messages dans la console et n’affichera que les messages de la classe `Simulation` dans un fichier.
+Les messages doivent tous être horodatés et indiquer de quelle classe ils proviennent.
