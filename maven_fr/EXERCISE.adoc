@@ -9,7 +9,7 @@ endif::[]
 
 Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 
-== Partie 0
+== Prérequis
 
 * installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 * (Sur Windows, avoir un terminal POSIX type *Git Bash*, la suite de l'exercice est à faire dans celui-ci)
@@ -17,12 +17,12 @@ Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous
 ** `git config --global user.name &quot;John Doe&quot;`
 ** `git config --global user.email johndoe@example.fr`
 * générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
-* installer Java 16 (cf https://adoptopenjdk.net/)
+* installer Java 17 (cf https://adoptopenjdk.net/)
 
-* &#x1F4D8; les commandes `javac -version` et `java -version` doivent afficher la version *16*
+* &#x1F4D8; les commandes `javac -version` et `java -version` doivent afficher la version *17*
 * installer Maven (cf https://maven.apache.org/install.html)
 
-* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.1*
+* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.3*
 * installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
 == Partie 1 - premier commit
@@ -116,8 +116,8 @@ Tous les fichiers générés par Maven seront placé dans le répertoire **targe
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>16</maven.compiler.source>
-        <maven.compiler.target>16</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 </project>
 
@@ -206,9 +206,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/setup-java@v2
         with:
-          java-version: '16'
+          distribution: 'temurin'
+          java-version: '17'
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -232,7 +233,7 @@ Ce fichier (**build.yml**) est reconnu par GitHub et permet de déclencher à ch
 constituée des étapes suivantes :
 
 * checkout du code
-* installation de Java 16
+* installation de Java 17
 * mise en cache (et récupération) des dépendances Maven du projet
 * affichage de la version de java installée (pour info)
 * lancement de la commande `mvnw install`

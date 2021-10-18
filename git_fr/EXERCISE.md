@@ -16,13 +16,13 @@ Si une partie n'est pas faite en intégralité, la note de cette partie sera 0.
 
 Les parties se suivent et sont à faire dans l'ordre.
 
-## Partie 0
-* installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+## Prérequis
+* Installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 * (Sur Windows, avoir un terminal POSIX type **Git Bash**, la suite de l'exercice est à faire dans celui-ci)
-* configurer Git avec votre nom et email
+* Configurer Git avec votre nom et email
   * `git config --global user.name "John Doe"`
   * `git config --global user.email johndoe@example.fr`
-* générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
+* Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 ## Partie 1
 
