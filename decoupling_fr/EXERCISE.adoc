@@ -24,7 +24,7 @@ L’objectif de cet exercice est de prendre en main le concept de découplage en
 
 == Partie 0 - Repository GitHub
 
-* créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **decouplig_java_training** initialisé avec un fichier
+* créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **decoupling_java_training** initialisé avec un fichier
 README.md (case à cocher dans le formulaire de création de dépôt)
 * cloner ce nouveau dépôt en utilisant l’url SSH
 * la branche par défaut est la branche `main` c’est sur celle-ci que nous allons travailler
