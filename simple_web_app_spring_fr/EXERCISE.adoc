@@ -25,6 +25,8 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 
 * installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
+* Installer Docker et Docker Compose (Docker Desktop pour Windows et Mac)
+
 == Partie 0 - Repository GitHub
 
 * Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **web_app_spring_training** initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
@@ -101,7 +103,7 @@ Dans notre cas, ce qui nous intéresse c’est :
 * Annoter ces méthodes de façon à ce qu’elle réponde sur les requêtes HTTP suivantes :
 ** *POST* /api/todo
 ** *GET* /api/todo
-* Créer une classe `fr.lernejo.todo.TodoListApp` annoter avec `@SpringBootApplication`
+* Créer une classe `fr.lernejo.todo.TodoListApp` annotée avec `@SpringBootApplication`
 * Y ajouter une fonction `main` avec le contenu suivant : `SpringApplication.run(TodoListApp.class, args);`
 * Lancer l’application grâce à la méthode `main`, par défaut le serveur lancé par le framework écoute sur le port 8080
 * Vérifier que les endpoints HTTP fonctionnent comme attendu avec un client HTTP (navigateur, curl, etc.)
@@ -242,7 +244,7 @@ services:
 // -
 
 * Démarrer l’application avec la commande `docker-compose up`
-* Vérifier que le service est bien disponible (GET http://localhot:8081/api/todo)
+* Vérifier que le service est bien disponible (GET http://localhost:8081/api/todo)
 * Indexer et commiter les fichiers nouvellement créés
 
 == Partie 6 - Dimensionnement et répartition de la charge

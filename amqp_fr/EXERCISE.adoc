@@ -1,0 +1,229 @@
+= Communication asynchrone
+:hardbreaks-option:
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+endif::[]
+
+Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+
+L’objectif de cet exercice est de construire une application minimaliste (TODO list), communicant au travers d’un broker de message, RabbitMQ.
+
+== Prérequis
+
+* Installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* (Sur Windows, avoir un terminal POSIX type **Git Bash**, la suite de l’exercice est à faire dans celui-ci)
+* Configurer Git avec votre nom et email
+** `git config --global user.name "John Doe"`
+** `git config --global user.email johndoe@example.fr`
+* Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
+
+* Installer Java 17 (cf https://adoptium.net/)
+* &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
+
+* installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
+
+* Installer Docker et Docker Compose (Docker Desktop pour Windows et Mac)
+
+== Partie 0 - Création du dépôt via un template
+
+* Sur la page du template https://github.com/lernejo/maven_starter_template, cliquer sur "Use this template"
+* Renseigner comme nom de dépôt : *amqp_training*
+* Marquer le futur dépôt comme *public*
+* Créer le dépôt en cliquant sur "Create repository from template"
+
+== Partie 1 - BOM & Dépendances
+
+[NOTE]
+====
+On appelle BOM (**B**ill **O**f **M**aterials), une liste de librairies et frameworks dont les versions sont garanties compatibles.
+
+En effet, l’écosystème Java évolue très vite, et des changements incompatibles (méthodes ou classes qui disparaissent, etc.) arrivent fréquemment.
+
+Ainsi les plus gros frameworks (comme Spring-Boot) publient des BOM pour assurer que tous les binaires en dépendance d’un projet fonctionnent bien les uns avec les autres
+====
+
+* Dans le fichier *pom.xml*, ajouter le BOM de Spring-Boot dans la section `<dependencyManagement>`
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.6.1</version>
+            <scope>import</scope>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+* Ajouter la dépendance qui nous intéresse dans la section `<dependencies>`
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-amqp</artifactId>
+        <!-- <version>???</version> --> <!--1-->
+    </dependency>
+</dependencies>
+----
+
+<1> La version n’est pas précisée car elle est gérée par le BOM
+
+== Partie 2 - Dockerized RabbitMQ
+
+Docker est un outil permettant de lancer des conteneurs reposant sur des images.
+Les images elles-mêmes sont des archives contenant les binaires nécessaires/voulus (os, tools, app, etc.)
+
+Docker Compose est un ordonnanceur de conteneur, l’idée est de pouvoir piloter depuis un même fichier descripteur un ensemble de conteneur de manière cohérente.
+
+Nous allons nous servir de Docker Compose pour démarrer une instance de RabbitMQ sans avoir besoin de l’installer
+
+* Créer un fichier *docker-compose.yml* à la racine du projet
+* Y copier le contenu suivant
+
+[source,yml]
+----
+version: "3.9"
+services:
+    rabbitmq:
+        # https://hub.docker.com/_/rabbitmq
+        image: rabbitmq:3.9.7-management-alpine
+        container_name: rabbitmq
+        ports:
+            - 5672:5672 # AMQP
+            - 15672:15672 # HTTP (Management)
+----
+
+* Démarrer le _broker_ avec la commande `docker-compose up`
+* Vérifier que le service est bien disponible (http://localhost:15672 guest/guest)
+
+== Partie 3 - Listener AMQP
+
+Nous allons coder un listener qui dans un premier temps affichera le contenu du message reçu dans la console (`System.out.println`).
+
+* Dans le package `fr.lernejo.chat`, créer une classe `ChatMessageListener`, annotée avec `@Component`
+
+[NOTE]
+====
+Les annotations telles que `@Controller`, `@Component`, `@Service`, etc. sont des annotations de marquage qui permettent au framework Spring de comprendre le rôle des classes ainsi marquées et d’en gérer le cycle de vie (construction, injection, notifications, destruction).
+====
+
+* Créer dans cette classe une méthode publique `onMessage` qui prendra un paramètre de type `String`, c’est cette méthode qui devra afficher le contenu du message dans la console.
+* Créer une classe `fr.lernejo.chat.ChatApp` annotée avec `@SpringBootApplication`
+* Y ajouter une fonction `main` avec le contenu suivant : `SpringApplication.run(ChatApp.class, args);`
+* Créer une classe `AmqpConfiguration` annotée avec `@Configuration`
+* Y ajouter le contenu suivant
+
+[source,java]
+----
+
+private static final String queueName = "chat_messages";
+
+@Bean
+Queue queue() {
+    return new Queue(queueName, true);
+}
+
+@Bean
+MessageListenerAdapter listenerAdapter(ChatMessageListener chatMessageListener) {
+    return new MessageListenerAdapter(chatMessageListener, "onMessage");
+}
+
+@Bean
+SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
+    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    container.setConnectionFactory(connectionFactory);
+    container.setQueueNames(queueName);
+    container.setMessageListener(listenerAdapter);
+    return container;
+}
+----
+
+* Démarre l’application
+* Envoyer un message sur la queue créée par l’application lors de son démarrage à travers l’interface de management de RabbitMQ
+** Pour cela, ne pas oublier de passer une propriété nommée `content_type` avec la valeur `text/plain`
+* Vérifier que le message apparaît bien dans la console
+
+== Partie 4 - Consultation des 10 derniers messages
+
+Nous allons maintenant stocker dans la mémoire de notre application les 10 derniers messages reçus et les mettre à disposition sur une API HTTP.
+
+* Ajouter la dépendance suivante
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+</dependencies>
+----
+
+* Créer une classe `ChatMessageRepository` qui aura la charge de stocker les 10 derniers messages. Cette classe aura donc deux méthodes dont voici les signatures :
+** `void addChatMessage(String message)`
+** `List<String> getLastTenMessages()`
+* Injecter une instance de cette classe dans `ChatMessageListener` et remplacer l’affichage dans la console par le stockage du message dans le _repository_
+* Créer une classe `ChatMessageController` annotée avec `@RestController`
+* Ajouter dans cette dernière classe une méthode annotée avec `@GetMapping` qui devra retourner la liste des 10 derniers messages en JSON sur l’URL http://localhost:8080/api/message
+* Tester le bon fonctionnement de l’application en envoyant des messages via l’interface de management de RabbitMQ
+
+== Partie 5 - Maven multi-module
+
+Dans cette partie nous allons transformer le projet Maven mono-module en multi-module.
+Le code écrit jusque-là sera hébergé dans le module *server*.
+
+* Créer un nouveau module appelé *server* dans votre projet
+** Clic-droit -> New -> Module -> Maven
+* Y déplacer le code ainsi que la section `<dependencies>` du *pom.xml* racine
+* Remarquer qu’une balise `<packaging>pom</packaging>` est apparue dans le *pom.xml* racine, ainsi qu’une section `<modules>`
+* Lancer la compilation depuis le répertoire racine et vérifier qu’elle finit en succès
+
+== Partie 6 - Client AMQP
+
+Nous allons maintenant coder un client AMQP afin de pouvoir envoyer les messages directement depuis un terminal.
+
+* Créer un nouveau module *client* (*[.underline]#à côté#* du module *server*)
+* Dans le *pom.xml* de ce module, ajouter la dépendance vers le *starter-amqp* de *spring-boot*
+* Dans le package `fr.lernejo.chat` créer une classe `Launcher` annotée avec `SpringBootApplication`
+* Y ajouter une fonction `main` qui devra boucler sur l’entrée standard et envoyer le  message à chaque retour chariot de l’utilisateur, comme ceci :
+
+image::amqp_client.gif[]
+
+
+[NOTE]
+====
+Pour démarrer un contexte Spring sans perdre la main en terme d’execution, on peut utiliser `AnnotationConfigApplicationContext` avec comme paramètre les classes de configuration.
+Dans notre cas, il s’agit de la classe `Launcher`.
+
+Pour récupérer un objet dont le cycle de vie est géré par ce contexte, faire appel à la méthode `getBean(Class<T>)`.
+
+L’object qui permet d’envoyer simplement des messages est fourni par *spring-rabbit*, il s’agit de `RabbitTemplate`.
+
+Celui-ci possède une méthode `convertAndSend(String, String, Object)` qui permet d’envoyer un message sur un _exchange_ spécifique avec une certaine _routing-key_.
+
+Dans notre cas, nous allons utiliser l’_exchange_ par défaut, qui permet d’envoyer un message sur la _queue_ qui a le nom de la _routing-key_ utilisée.
+====
+
+== Partie 7 - Vérifier l’asynchronisme de la communication
+
+Nous avons donc deux applications distinctes qui communiquent au travers d’un broker de message.
+
+Ainsi les applications n’ont pas besoin l’une de l’autre pour fonctionner.
+
+On peut très bien
+
+* Éteindre le serveur
+* Démarrer le client
+* :love_letter: Envoyer quelques messages
+* Quitter le client
+* Démarrer le serveur
+** :mailbox: Les messages sont lus à ce moment-là
+* Vérifier la présence des messages avec l’API HTTP
