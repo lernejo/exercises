@@ -217,7 +217,7 @@ La méthode `log` de cette implémentation devra elle-même appeler la méthode 
 [source,java]
 ----
 public void log(String message) {
-  delegateLogger.log(LocalDate.now().format(formatter) + " " + callerClass + " " + message);
+  delegateLogger.log(LocalDateTime.now().format(formatter) + " " + callerClass + " " + message);
 }
 ----
 
