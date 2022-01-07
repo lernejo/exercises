@@ -90,8 +90,7 @@ Pour faire fonctionner http://localhost:8080/[le frontend], construire deux APIs
             "type": "string"
         },
         "userCountry": {
-            "type": "string",
-            "pattern": "^[A-Z]{2}$"
+            "type": "string"
         },
         "weatherExpectation": {
             "type": "string",
