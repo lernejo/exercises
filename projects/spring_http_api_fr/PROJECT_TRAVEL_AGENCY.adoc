@@ -123,7 +123,8 @@ Par exemple :
     "userEmail": "machin@truc.com",
     "userName": "machin",
     "userCountry": "France",
-    "weatherExpectation": "WARMER"
+    "weatherExpectation": "WARMER",
+    "minimumTemperatureDistance": 20
 }
 ----
 
