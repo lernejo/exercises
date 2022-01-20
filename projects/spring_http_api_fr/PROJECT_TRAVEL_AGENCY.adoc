@@ -31,8 +31,7 @@ La notation se découpera en plusieurs parties :
 ** Disponibles
 ** Conforment aux schémas donnés
 ** Cohérentes (un appel à `GET /api/travels` après le démarrage de l’application ne donne rien, car `POST /api/inscription` n’a pas été appelée avant)
-** Fonctionnelles (un appel à `GET /api/travels` retournent les *destinations* possibles pour les personnes déjà inscrites)
-* La partie sur le cache a été réalisée
+** Fonctionnelles (un appel à `GET /api/travels` retourne les *destinations* possibles pour les personnes déjà inscrites)
 * L’historique *GIT* lisible et propre
 ** Pas de message de commit sans _**intention**_
 ** Pas de commit successifs avec le même message
