@@ -98,7 +98,7 @@ services:
 
 * Démarrer les services avec la commande `docker compose up`
 * &#x1F4D8; Vérifier que RabbitMQ est bien disponible (http://localhost:15672 guest/guest)
-* &#x1F4D8; Vérifier qu’ElasticSearch est bien disponible (http://localhost:9200)
+* &#x1F4D8; Vérifier qu’ElasticSearch est bien disponible (http://localhost:9200 elastic/admin)
 
 == Partie 2 - AMQP => ElasticSearch
 
