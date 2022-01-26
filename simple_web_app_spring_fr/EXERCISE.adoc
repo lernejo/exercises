@@ -243,7 +243,7 @@ services:
 
 // -
 
-* Démarrer l’application avec la commande `docker-compose up`
+* Démarrer l’application avec la commande `docker compose up`
 * Vérifier que le service est bien disponible (GET http://localhost:8081/api/todo)
 * Indexer et commiter les fichiers nouvellement créés
 
@@ -313,7 +313,7 @@ labels:
 - "traefik.http.routers.todolist.middlewares=todolist@docker"
 ----
 
-* Lancer les différents containers grâce à la commande `docker-compose up`
+* Lancer les différents containers grâce à la commande `docker compose up`
 * Vérifier que le service est rendu derrière l’url http://localhost:80/app/api/todo
 * Supprimer le port de machine hôte spécifié dans la configuration du service *todolist* dans le fichier *docker-compose.yml*
 
@@ -331,7 +331,7 @@ deploy:
   replicas: 3
 ----
 
-* Lancer les différents containers grâce à la commande `docker-compose up`
+* Lancer les différents containers grâce à la commande `docker compose up`
 * Vérifier que le header *Instance-Id* a 3 valeurs distinctes quelque-soit le nombre d’appels HTTP qui sont fait
 * Indexer et commiter les changements
 
@@ -430,8 +430,8 @@ postgres:
       POSTGRES_PASSWORD: example
 ----
 
-* Relancer la construction de l’image docker avec la commande `docker-compose build`
-* Lancer les différents containers avec la commande `docker-compose up`
+* Relancer la construction de l’image docker avec la commande `docker compose build`
+* Lancer les différents containers avec la commande `docker compose up`
 * Vérifier la cohérence de comportement dans l’API malgré l’utilisation d’instances différentes à travers l’url http://localhost:80/app/api/todo
 * Indexer et commiter les changements
 

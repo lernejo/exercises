@@ -101,7 +101,7 @@ services:
             - 15672:15672 # HTTP (Management)
 ----
 
-* Démarrer le _broker_ avec la commande `docker-compose up`
+* Démarrer le _broker_ avec la commande `docker compose up`
 * Vérifier que le service est bien disponible (http://localhost:15672 guest/guest)
 
 == Partie 3 - Listener AMQP
