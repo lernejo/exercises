@@ -92,6 +92,8 @@ services:
             - discovery.type=single-node
             - xpack.security.enabled=true
             - ELASTIC_PASSWORD=admin
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms256m -Xmx512m"
 ----
 
 * Démarrer les services avec la commande `docker compose up`
@@ -102,13 +104,24 @@ services:
 
 Le but de cette partie est de coder dans le module *search-api* un _listener_ AMQP qui indexera chaque message reçu dans ElasticSearch.
 
-* Ajouter la dépendance au client ElasticSearch (`co.elastic.clients:elasticsearch-java`) dans la section `dependencyManagement` du POM racine, ainsi que dans la section `dependencies` du POM du module *search-api*
+[NOTE]
+====
+
+Dans ElasticSearch, la notion d'index est similaire à la notion de table dans une base de données.
+
+Il s'agit d'une catégorie dans laquelle on placera des documents ayant le même format.
+
+Il sera par la suite possible de requêter cet index pour récupérer les documents qui correspondent aux critères de la requête.
+====
+
+* Ajouter la dépendance au client ElasticSearch (`org.elasticsearch.client:elasticsearch-rest-high-level-client`) dans la section `dependencyManagement` du POM racine, ainsi que dans la section `dependencies` du POM du module *search-api*
 ** La version de cette dépendance ne doit pas apparaître dans le POM enfant et doit être factorisée dans les propriétés du POM racine
 ** Pour trouver les versions disponibles d’un binaire Maven, direction https://mvnrepository.com/
 
 * Créer une classe `ElasticSearchConfiguration` marquée comme étant une configuration au sens de Spring
 * Y déclarer un bean de type `RestHighLevelClient` avec adresse, port, _username_ et _password_ configurables et avec comme valeurs par défaut `localhost`, `9200`, `elastic` et `admin`
 ** Les clés pour configurer ces valeurs doivent être `elasticsearch.host`, `elasticsearch.port`, `elasticsearch.username`, `elasticsearch.password`
+** A noter que la classe `RestHighLevelClient` est dépréciée, mais fonctionne encore
 
 [NOTE]
 ====
