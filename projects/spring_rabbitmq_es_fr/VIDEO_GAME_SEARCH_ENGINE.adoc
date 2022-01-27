@@ -183,6 +183,9 @@ Dans cette partie, nous allons construire un programme simple qui prendra en ent
     "$schema": "http://json-schema.org/schema#",
     "type": "object",
     "properties": {
+        "id": {
+            "type": "number"
+        },
         "title": {
             "type": "string"
         },
@@ -205,6 +208,12 @@ Dans cette partie, nous allons construire un programme simple qui prendra en ent
             "type": "string"
         },
         "release_date": {
+            "type": "string"
+        },
+        "game_url": {
+            "type": "string"
+        },
+        "freetogame_profile_url": {
             "type": "string"
         }
     },
