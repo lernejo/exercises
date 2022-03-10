@@ -71,12 +71,12 @@ image::schema.png[]
 * Créer un serveur HTTP qui écoutera sur le port indiqué comme premier paramètre du programme
 ** Pour cela, utiliser `com.sun.net.httpserver.HttpServer#create`
 ** Spécifier pour ce serveur un `ExecutorService` avec de taille fixe : 1 thread
-** Utiliser la méthode `createContext` pour associer au chemin `/ping` une implémentation de `CallHandler` qui renverra une trame HTTP de statut OK (200) et de corps `OK`
+** Utiliser la méthode `createContext` pour associer au chemin `/ping` une implémentation de `HttpHandler` qui renverra une trame HTTP de statut OK (200) et de corps `OK`
 * &#x1F4D8; une fois le serveur démarré, il est possible de le tester avec un navigateur internet à l’adresse **http://localhost:9876/ping** si le paramètre du programme est `9876`
 
 [NOTE]
 ====
-La méthode `CallHandler#handle` reçoit un paramètre de type `HttpExchange` dont les différentes méthodes permettent de lire la requête (`headers` et `body`) et d’écrire la réponse (`status`, `headers` et `body`).
+La méthode `HttpHandler#handle` reçoit un paramètre de type `HttpExchange` dont les différentes méthodes permettent de lire la requête (`headers` et `body`) et d’écrire la réponse (`status`, `headers` et `body`).
 
 Par exemple pour renvoyer un code 200 (OK) et le texte `Hello` :
 
