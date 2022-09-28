@@ -11,26 +11,27 @@ Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous
 
 == Prérequis
 
-* installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* Installer Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 * (Sur Windows, avoir un terminal POSIX type *Git Bash*, la suite de l'exercice est à faire dans celui-ci)
-* configurer Git avec votre nom et email
+* Configurer Git avec votre nom et email
 ** `git config --global user.name &quot;John Doe&quot;`
 ** `git config --global user.email johndoe@example.fr`
-* générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
-* installer Java 17 (cf https://adoptopenjdk.net/)
+* Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
+* Installer Java 17 (cf https://adoptium.net/)
 * &#x1F4D8; les commandes `javac -version` et `java -version` doivent afficher la version *17*
-* installer Maven (cf https://maven.apache.org/install.html)
 
-* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.3*
-* installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
+* Installer Maven (cf https://maven.apache.org/install.html)
+* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.6*
+
+* Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
 == Partie 1 - premier commit
 
-* créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom *maven_training* initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
-* cloner ce nouveau dépôt en utilisant l'*url SSH*
-* la branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
-* ajouter un fichier *.editorconfig* à la racine du dépôt avec le contenu suivant
+* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom *maven_training* [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Cloner ce nouveau dépôt en utilisant l'*url SSH*
+* La branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
+* Ajouter un fichier *.editorconfig* à la racine du dépôt avec le contenu suivant
 
 [source,EditorConfig]
 ----
@@ -252,11 +253,11 @@ constituée des étapes suivantes :
 ----
 <properties> <!-- balise existante -->
   ...
-  <junit.version>5.8.1</junit.version>
-  <assertj.version>3.21.0</assertj.version>
+  <junit.version>5.9.1</junit.version>
+  <assertj.version>3.23.1</assertj.version>
 
   <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-  <jacoco-maven-plugin.version>0.8.7</jacoco-maven-plugin.version>
+  <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
 </properties>
 ----
 
@@ -338,6 +339,7 @@ Enfin, nous utilisons le plugin **jacoco** afin d'analyser la couverture de code
 ====
 
 * Ouvrir IntelliJ et importer le projet en choisissant `File` -> `New` -> `Project from Existing Sources...` et en sélectionnant le fichier *pom.xml*
+* Créer le répertoire src/test/java (clic droit sur `maven_training` -> `New` -> `Directory`) qui va accueillir les classes de test
 * Ouvrir la classe Java *Sample* et créer la classe de test correspondante en utilisant le raccourci (Ctrl + Shift + T)
 ou par le menu `Navigate` -> `Test`
 * Ajouter les tests nécessaires à une couverture du code à 100 %
@@ -392,3 +394,10 @@ C'est là l'intérêt des badges. Ces petites images reflètent l'état actuel d
 ** couverture par les tests (cf https://codecov.io/gh/<your-name>/<your-project>/settings/badge)
 * Commiter ce changement avec le message "Add live badges"
 * &#x1F4D8; Dans l'interface web GitHub de votre projet, le fichier README affiché par défaut doit contenir les deux badges indiquant que le build est en succès et que la couverture par les tests est de 100 %
+
+[TIP]
+=====
+Si le badge de couverture apparait en gris, il est possible que Codecov n'est pas reçu l'information de couverture.
+
+Pour _troubleshooter_ ce problème, vérifier dans les executions de votre workflow de CI (onglet `Action` dans GitHub), les logs de l'étape correspondante à l'action codecov.
+=====

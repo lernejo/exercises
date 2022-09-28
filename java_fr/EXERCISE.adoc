@@ -14,14 +14,14 @@ La correction sera automatique, prenez donc soin de respecter les indications le
 ** `git config --global user.email johndoe@example.fr`
 * Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
-* Installer Java 17 (cf https://adoptium.net)
+* Installer Java 17 (cf https://adoptium.net/)
 * &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
 
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
 == Partie 1 - Hello World et compilation
 
-* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **java_exercise_1** initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **java_exercise_1** [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
 * Cloner ce nouveau dépôt en utilisant l’**url SSH**
 * La branche par défaut est la branche **main** c’est sur celle-ci que nous allons travailler
 * Créer deux répertoires **src** et **bin** qui contiendront respectivement les sources (fichiers *.java) et les fichiers compilés (fichiers *.class)

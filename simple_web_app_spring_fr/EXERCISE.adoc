@@ -23,19 +23,22 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 * Installer Java 17 (cf https://adoptium.net/)
 * &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
 
+* Installer Maven (cf https://maven.apache.org/install.html)
+* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.6*
+
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
 * Installer Docker Compose V2 (Docker Desktop pour Windows et Mac)
 
 == Partie 0 - Repository GitHub
 
-* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **web_app_spring_training** initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **web_app_spring_training** [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
 * Cloner ce nouveau dépôt en utilisant l’url SSH
 * La branche par défaut est la branche `main` c’est sur celle-ci que nous allons travailler
 
 == Partie 1 - Création de la structure du projet Java et mise ne place de la CI
 
-* Reprendre les partie 1 à 4 de l’exercice link:../maven_fr/EXERCISE.adoc[Maven et intégration continue].
+* Reprendre les partie 1 à 4 de l’exercice link:https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc[Maven et intégration continue].
 
 == Partie 2 - BOM & Dépendances
 
@@ -57,7 +60,7 @@ Ainsi les plus gros frameworks (comme Spring-Boot) publient des BOM pour assurer
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-dependencies</artifactId>
-            <version>2.5.5</version>
+            <version>2.7.4</version>
             <scope>import</scope>
             <type>pom</type>
         </dependency>
@@ -130,34 +133,26 @@ Un filtre peut également décider d’interrompre la chaîne, auquel cas la ré
 * Créer une classe `fr.lernejo.todo.ApplicationIdentifierFilter` implémentant l’interface `javax.servlet.Filter` et annotée avec `@Component`
 * Générer un `UUID` aléatoire dans le constructeur de cette classe, et stocker sa conversion en `String` dans un champ de la classe
 * Dans l’implémentation de la méthode `doFilter` ajouter le header *Instance-Id* avec cette valeur à la réponse avant d’appeler le maillon suivant de la chaîne de responsabilité.
-Pour cela, la réponse doit être _castée_ vers le type `javax.servlet.http.HttpServletResponse` qui lui possède une méthode `setHeader`
+Pour cela, la réponse doit être _matchée_ vers le type `javax.servlet.http.HttpServletResponse` qui lui possède une méthode `setHeader`
 
 [NOTE]
 ====
-Un _cast_ (downcast) est un changement de type d’un type vers un autre plus spécifique.
-Par exemple de `Object` vers `String` :
+Le pattern-matching est un outil qui permet de distinguer des branches d'exécutions en fonction d'un type, ou même de son contenu.
+
+En Java, le pattern matching est en construction.
+
+Mais on peut déjà l'utiliser pour créer une variable du bon type sans _downcast_.
 
 [source,java]
 ----
 public void myMethod(Object myParam) {
-    String myString = (String) myParam; // <1>
-    // more code
+    if (myParam instanceof String myString) {
+        // <1>
+    }
 }
 ----
+<1> Ici la variable `myString` de type String est disponible. On ne rentrera pas dans le `if` si le paramètre donné n'est pas un `String`
 
-<1> Valide à la compilation, le compilateur ne sait pas à l’avance quel seront les objets passés à cette méthode.
-
-Il s’agit d’un changement de type, pas d’une conversion de type.
-Un tel changement peut échouer si la variable qui est passée en pratique n’a pas le bon type.
-Par exemple :
-
-[source,java]
-----
-myMethod(Integer.ZERO); // <1>
-----
-
-<1> Valide à la compilation car `Integer` est un sous-type de `Object`, mais pendant l’exécution, essayer de traiter un `Integer` comme étant un `String` provoquera une exception `ClassCastException`
-====
 
 * Démarrer l’application et vérifier la présence du header *Instance-Id* dans un appel au endpoint *GET*
 * Plusieurs appels retournerons même header, cependant si l’application redémarre, celui-ci changera
@@ -360,7 +355,7 @@ Dans cet exercice, nous allons stocker l’état dans une base PostgreSQL.
 <dependency>
     <groupId>org.postgresql</groupId>
     <artifactId>postgresql</artifactId>
-    <version>42.3.0</version>
+    <version>42.5.0</version>
 </dependency>
 ----
 
@@ -435,6 +430,6 @@ postgres:
 * Vérifier la cohérence de comportement dans l’API malgré l’utilisation d’instances différentes à travers l’url http://localhost:80/app/api/todo
 * Indexer et commiter les changements
 
-Un petit schema de l’architecture du projet pour finir
+Un petit schema de l’architecture du projet que vous venez de réaliser pour finir :
 
 image::final_architecture.png[align=center]

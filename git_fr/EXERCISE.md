@@ -26,7 +26,7 @@ Les parties se suivent et sont à faire dans l'ordre.
 
 ## Partie 1
 
-* créer un nouveau dépôt Git sur la plateforme GitHub avec le nom **git_training** initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* créer un nouveau dépôt Git sur la plateforme GitHub avec le nom **git_training**  initialisé avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
 * cloner ce nouveau dépôt en utilisant l'**url SSH**
 * créer une nouvelle branche nommée **ex/part_1**
 * ajouter un fichier nommé **Doc.md** et contenant un titre **Documentation** et un lien hypertexte nommé **Git - Documentation** pointant sur https://git-scm.com/doc

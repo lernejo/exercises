@@ -22,6 +22,9 @@ L’objectif de cet exercice est de construire une application minimaliste (TODO
 * Installer Java 17 (cf https://adoptium.net/)
 * &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
 
+* Installer Maven (cf https://maven.apache.org/install.html)
+* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.6*
+
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
 * Installer Docker Compose V2 (Docker Desktop pour Windows et Mac)
@@ -53,7 +56,7 @@ Ainsi les plus gros frameworks (comme Spring-Boot) publient des BOM pour assurer
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-dependencies</artifactId>
-            <version>2.6.1</version>
+            <version>2.7.4</version>
             <scope>import</scope>
             <type>pom</type>
         </dependency>
