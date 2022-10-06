@@ -62,7 +62,7 @@ La notation se découpera en plusieurs parties :
 * Renseigner comme nom de dépôt : *video_game_search_engine*
 * Marquer le futur dépôt comme *public*
 * Créer le dépôt en cliquant sur "Create repository from template"
-* N'oubliez pas de mettre à jour les badges, une fois vôtre repo créé (suivre -> https://github.com/lernejo/exercises/blob/c61f23726f8b4727a046924d5236d6769d25f1b0/maven_fr/EXERCISE.adoc#partie-6---live-badges[Partie 6])
+* N'oubliez pas de mettre à jour les badges, une fois vôtre repo créé (suivre -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
 
 == Partie 1 - Démarrer les outils tiers avec Docker Compose
 
