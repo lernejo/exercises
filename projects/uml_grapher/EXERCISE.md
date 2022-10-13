@@ -140,7 +140,7 @@ manière _standalone_).
       seulement `GraphType.Mermaid` pour le moment). Cette option aura pour valeur par défaut `GraphType.Mermaid`
 * Il sera nécessaire de modifier le constructeur de `UmlGraph` pour prendre un paramètre _variadique_ et ainsi pouvoir
   réaliser l'analyse depuis plusieurs classes
-* &#x1F4D8; Vérifier que si vous lancer le programme avec les arguments `-c fr.lernejo.UmlGraphTests.Machin` le résultat
+* &#x1F4D8; Vérifier que si vous lancer le programme avec les arguments `-c fr.lernejo.UmlGraphTests$Machin` le résultat
   est bien le même qu'avec le test unitaire (il sera nécessaire de rajouter au classpath le chemin `target/test-classes`
   pour que la classe `Machin` soit accessible au code de production)
 
@@ -270,15 +270,26 @@ Nous allons donc nous servir d'une bibliothèque tierce qui fera ce travail pour
 * Voici le code pour créer une instance de l'objet `Reflections` qui scanne toutes les classes, indépendamment du _package_ :
 
 ```java
-Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(""));
+
+Class<?> type = ...;
+
+Reflections reflections = new Reflections(new ConfigurationBuilder()
+    .forPackage("")
+    .forPackage("", type.getClassLoader())
+);
 ```
+* :warning: La ligne `.forPackage("", type.getClassLoader())` est importante afin de scanner des classes qui seraient issues d'un autre classloader que celui qui a chargé votre code (et qui devrait être le `AppClassLoader`)
 
 * Ainsi, pour un type donné, on peut requêter l'index créé par l'objet de type `Reflections` et obtenir les sous-types _
   directs_ :
 
 ```java
 Class<?> type = Animal.class; // example
-Set<Class<?>> subTypes = reflections.get(Scanners.SubTypes.get(type).asClass()); // will contain [Ant.class, Cat.class]
+Set<Class<?>> subTypes = reflections.get(
+    Scanners.SubTypes
+        .get(type)
+        .asClass(this.getClass().getClassLoader(), type.getClassLoader())
+    ); // will contain [Ant.class, Cat.class]
 ```
 
 * &#x1F4D8; A cette étape, créer le graphe pour le tableau de paramètre `Living` devra créer le même graphe que celui
