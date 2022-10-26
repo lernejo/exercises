@@ -30,15 +30,16 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 
 * Installer Docker Compose V2 (Docker Desktop pour Windows et Mac)
 
-== Partie 0 - Repository GitHub
+== Partie 1 - Création du dépôt via un template
 
-* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **web_app_spring_training** [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
-* Cloner ce nouveau dépôt en utilisant l’url SSH
-* La branche par défaut est la branche `main` c’est sur celle-ci que nous allons travailler
-
-== Partie 1 - Création de la structure du projet Java et mise ne place de la CI
-
-* Reprendre les partie 1 à 4 de l’exercice link:https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc[Maven et intégration continue].
+* Sur la page du template https://github.com/lernejo/maven_starter_template, cliquer sur "Use this template"
+* Renseigner comme nom de dépôt : **web_app_spring_training**
+* Marquer le futur dépôt comme **public**
+* Créer le dépôt en cliquant sur "*Create repository from template*"
+* N'oubliez pas de mettre à jour les badges, une fois votre repo créé (suivre
+  -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
+* Cloner ce nouveau dépôt en utilisant l'*url SSH*
+* La branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
 
 == Partie 2 - BOM & Dépendances
 
