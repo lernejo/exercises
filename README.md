@@ -5,7 +5,7 @@
 * [Maven & CI (FR)](maven_fr/EXERCISE.adoc) ~ 3h
 * [Decoupling using interfaces (FR)](decoupling_fr/EXERCISE.adoc) ~4h
 * [Multimodule project & Reflection (FR)](multimodule_reflect_fr/EXERCISE.adoc) ~6h
-* [Spring API & JDBC + Scaling using Docker Compose](simple_web_app_spring_fr/EXERCISE.adoc) ~6h
+* Spring API & JDBC + Scaling using Docker Compose [FR](simple_web_app_spring/EXERCISE_fr.adoc) [EN](simple_web_app_spring/EXERCISE_en.adoc) ~6h
 
 # Projects
 

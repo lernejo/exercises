@@ -7,7 +7,7 @@ endif::[]
 
 :hardbreaks-option:
 
-Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+Préfixé par ✔️, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 
 L’objectif de cet exercice est de construire une application web minimaliste (TODO list), utilisant *spring-mvc* pour la partie HTTP et *spring-data-jdbc* pour la partie persistance des données.
 
@@ -21,10 +21,10 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 * Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 * Installer Java 17 (cf https://adoptium.net/)
-* &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
+* ✔️ Les commandes `javac -version` et `java -version` doivent afficher la version **17**
 
 * Installer Maven (cf https://maven.apache.org/install.html)
-* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.6*
+* ✔️ la commande `mvn -version` doit afficher la version *3.8.6*
 
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
@@ -34,8 +34,9 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 
 * Sur la page du template https://github.com/lernejo/maven_starter_template, cliquer sur "Use this template"
 * Renseigner comme nom de dépôt : **web_app_spring_training**
-* Marquer le futur dépôt comme **public**
+* Marquer le futur dépôt comme **private**
 * Créer le dépôt en cliquant sur "*Create repository from template*"
+* Inviter le professeur actuel comme membre en lecture-seule (pour la correction)
 * N'oubliez pas de mettre à jour les badges, une fois votre repo créé (suivre
   -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
 * Cloner ce nouveau dépôt en utilisant l'*url SSH*
@@ -240,7 +241,7 @@ services:
 // -
 
 * Démarrer l’application avec la commande `docker compose up`
-* Vérifier que le service est bien disponible (GET http://localhost:8081/api/todo)
+* ✔️ Vérifier que le service est bien disponible (GET http://localhost:8081/api/todo)
 * Indexer et commiter les fichiers nouvellement créés
 
 == Partie 6 - Dimensionnement et répartition de la charge
@@ -310,7 +311,7 @@ labels:
 ----
 
 * Lancer les différents containers grâce à la commande `docker compose up`
-* Vérifier que le service est rendu derrière l’url http://localhost:80/app/api/todo
+* ✔️ Vérifier que le service est rendu derrière l’url http://localhost:80/app/api/todo
 * Supprimer le port de machine hôte spécifié dans la configuration du service *todolist* dans le fichier *docker-compose.yml*
 
 [NOTE]
@@ -328,7 +329,7 @@ deploy:
 ----
 
 * Lancer les différents containers grâce à la commande `docker compose up`
-* Vérifier que le header *Instance-Id* a 3 valeurs distinctes quelque-soit le nombre d’appels HTTP qui sont fait
+* ✔️ Vérifier que le header *Instance-Id* a 3 valeurs distinctes quelque-soit le nombre d’appels HTTP qui sont fait
 * Indexer et commiter les changements
 
 == Partie 7 - Persistence en base de données
@@ -392,7 +393,7 @@ CREATE TABLE IF NOT EXISTS todo (
 
 [NOTE]
 ====
-Les outils de persistance actuels (Spring-data, Hibernate, etc.) fonctionne sur la base d’_entités_ qui représente au format objet les données en base.
+Les outils de persistance actuels (Spring-data, Hibernate, etc.) fonctionnent sur la base d’_entités_ qui représente au format objet les données en base.
 
 Les entités (par extension, JPA) sont attendues comme étant des objets répondant à certains critères, notamment celui d’être _mutable_.
 ====
@@ -428,7 +429,7 @@ postgres:
 
 * Relancer la construction de l’image docker avec la commande `docker compose build`
 * Lancer les différents containers avec la commande `docker compose up`
-* Vérifier la cohérence de comportement dans l’API malgré l’utilisation d’instances différentes à travers l’url http://localhost:80/app/api/todo
+* ✔️ Vérifier la cohérence de comportement dans l’API malgré l’utilisation d’instances différentes à travers l’url http://localhost:80/app/api/todo
 * Indexer et commiter les changements
 
 Un petit schema de l’architecture du projet que vous venez de réaliser pour finir :

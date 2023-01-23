@@ -1,0 +1,439 @@
+= Simple Web app using Spring
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+endif::[]
+
+:hardbreaks-option:
+
+Steps marked with ✔️ are verifications that all is working as expected and that you can keep running through the exercise.
+
+The purpose of this exercise is to build a minimalist web application (TODO list), using *spring-mvc* for the HTTP part and *spring-data-jdbc* for the data persistence part.
+
+== Prerequisites
+
+* Install Git (cf https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* (On Windows, have a posix terminal, such as **Git Bash**)
+* Configure Git with your name and email
+** `git config --global user.name "John Doe"`
+** `git config --global user.email johndoe@example.fr`
+* If not existing, generate an SSH key and give the public part to GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
+
+* Install JDK 17 (cf https://adoptium.net/)
+* ✔️ `javac -version` and `java -version` command should display the version **17**
+
+* Install Maven (cf https://maven.apache.org/install.html)
+* ✔️ `mvn -version` command should display version *3.8.6* or higher
+
+* Install IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
+
+* Install Docker and Docker Compose V2 (Docker Desktop for Windows and Mac)
+
+== Part 1 - Repository creation using a template
+
+* On the template page https://github.com/lernejo/maven_starter_template, click on "Use this template"
+* Fill in the repository name: **web_app_spring_training**
+* Check the repository as **private**
+* Create the repository by clicking on "*Create repository from template*"
+* Invite the current teacher as a read-only member (for grading)
+* Do not forget to update badges (follow
+  -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
+* Clone this new repository using the *SSH URL*
+* The default branch is *main*, and the exercise will be graded on this branch
+
+== Part 2 - BOM & Dependencies
+
+[NOTE]
+====
+A BOM (**B**ill **O**f **M**aterials) is a list of libraries and frameworks for which versions are compatible.
+
+As the Java ecosystem evolves fast, breaking changes (method or class removed, etc.) frequently happen.
+
+That is why the biggest frameworks (such as Spring-Boot) publish BOM to ensure that all dependencies of a project work well with each other.
+====
+
+* In the *pom.xml* file, add Spring-Boot BOM in the `<dependencyManagement>` section
+
+[source,xml]
+----
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>2.7.4</version>
+            <scope>import</scope>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+----
+
+* Add the interesting dependency in the `<dependencies>` section
+
+[source,xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <!--1-->
+    </dependency>
+</dependencies>
+----
+
+<1> The version is not filled because it is handled by the BOM
+
+== Part 3 - HTTP Endpoints
+
+We will code two HTTP endpoints which will allow to
+
+* Get the list of notes
+* Add a new note
+
+First, the state will be set in memory using an `java.util.ArrayList`.
+
+Spring-mvc supply numerous annotations to point out the role of specific class or method to the framework.
+In our case, here are the interesting ones:
+
+* `@RestController` : mark a class as being a _controller_ (HTTP adapter)
+* `@GetMapping` : mark a method as handling a *GET* HTTP request
+* `@PostMapping` : mark a method as handling a *POST* HTTP request
+* `@RequestBody` : mark a method parameter for injection with the content of the HTTP request body, handling serialization (transforming raw text into a Java object)
+
+* Create a record `fr.lernejo.todo.Todo` with two parameters `message` and `author`
+* Create a class `fr.lernejo.todo.TodoListController`
+* Add two methods in this last class, one to add a `Todo` in the list, another to get the list
+* Annotate these methods so that they match the following requests:
+** *POST* /api/todo
+** *GET* /api/todo
+* Create a class `fr.lernejo.todo.TodoListApp` annotée avec `@SpringBootApplication`
+* Add a `main` method with the following content: `SpringApplication.run(TodoListApp.class, args);`
+* Run the application using the `main` method, by default the server launched by the framework listens on the 8080 port
+* ✔️ Check that the two endpoints behave as expected using an HTTP client (browser, curl, etc.)
+* Add and commit these files
+
+== Part 4 - A filter to add an HTTP header
+
+If our application is scaled horizontally, we will need to identify by which instance a given request is handled.
+To this end, we will create a filter which will add a header *Instance-Id* to each HTTP response.
+
+[NOTE]
+====
+A filter is a component implementing the `javax.servlet.Filter` interface, and will be used at the arrival of every request.
+
+It implements the *Chain of Responsibility* pattern, and its role (as a link) is to perform an operation and [.underline]#hand over to the next filter#:
+
+[source,java]
+----
+chain.doFilter(request, response);
+----
+
+A filter can also decide to interrupt the chain, in this case, the HTTP response will be sent as it is.
+====
+
+* Create a class `fr.lernejo.todo.ApplicationIdentifierFilter` implementing the `javax.servlet.Filter` interface and annotated with `@Component`
+* Generate a random `UUID` in this class constructor and store its `String` representation in a field of the class
+* In the implementation of the `doFilter` method, add the header *Instance-Id* with the random UUID value to the response before calling the next filter.
+
+To do this, the response object should be casted to the `javax.servlet.http.HttpServletResponse` type, which has a `setHeader` method.
+
+[NOTE]
+====
+The pattern-matching is a flow control tool allowing to have different execution branches depending on the type of an object.
+
+In Java, this feature is under construction.
+
+However, some parts are already usable, especially to avoid an explicit _downcast_:
+
+[source,java]
+----
+public void myMethod(Object myParam) {
+    if (myParam instanceof String myString) {
+        // <1>
+    }
+}
+----
+<1> The `myString` variable is of type `String`. The execution will not go inside the `if` bloc if the given parameter is not a `String`
+
+
+* ✔️ Start the application and check that the *Instance-Id* header is set
+* ✔️ Multiple calls should return the same header, however if the application is restarted, it will change
+* Add and commit the changes
+
+== Part 5 - Docker image of our application & Docker Compose
+
+Docker is a tool allowing to run containers based on images.
+
+Images themselves are archives containing the required/wanted binaries (OS, tools, application, etc.).
+
+Docker Compose is a container orchestrator, able to manage, consistently, from the same descriptor file, a set of containers.
+
+* Add in the `<build>` section of the *pom.xml* file the following content:
+
+[source,xml]
+----
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>2.5.5</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal> <!--1-->
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+----
+
+<1> The goal *repackage* is this plugin supplied by Spring-Boot will replace the jar created by the *maven-jar-plugin* by an auto-executable one, containing also the code of the dependencies
+
+// -
+
+* Create a *Dockerfile* file at the root of the project (next to the *pom.xml* file)
+* Paste in it the following content:
+
+[source,Docker]
+----
+# <1>
+FROM maven:3.8.3-openjdk-17 AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+# <2>
+RUN mvn -f /home/app/pom.xml clean package
+
+# <3>
+FROM eclipse-temurin:17-jdk-focal
+# <4>
+COPY --from=build /home/app/target/maven_training-1.0.0-SNAPSHOT.jar /usr/local/lib/app.jar
+# <5>
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
+----
+
+<1> Image containing Maven, used to build the project in a "*build*" step
+<2> Project jar packaging
+<3> Base image used for the final image, not containing Maven
+<4> It can be necessary to change the name of the archive, if the name or the version of the project have been changed
+<5> The application listens on the 8080 port, and this information is filled in to be able to handle network configuration and port forwarding
+
+// -
+
+* Create a *docker-compose.yml* file at the root of the project
+* Paste in it the following content:
+
+[source,yml]
+----
+version: "3.9"
+services:
+  todolist:
+    build : . # <1>
+    ports:
+      - 8081:8080 # <2>
+----
+
+<1> Use the *Dockerfile* int the same directory
+<2> Forward the 8081 port of the host (left) to the 8080 port of the container (right)
+
+// -
+
+* Start the app with the `docker compose up -d` command
+* ✔️ Check that the service is available (GET http://localhost:8081/api/todo)
+* Add and commit the changes
+
+== Part 6 - Scaling and load-balancing
+
+We are now setting upa load-balancer to distribute the HTTP traffic on several instances of our application.
+
+* In the *docker-compose.yml* file, add the following content under the service tag:
+
+[source,yml]
+----
+traefik:
+    image: traefik:2.5
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.toml:/traefik.toml
+----
+
+* Create a *traefik.toml* file at the root of the project with the following content:
+
+[source,toml]
+----
+[global]
+  sendAnonymousUsage = false
+
+[accessLog]
+
+[log]
+  level = "DEBUG"
+  format = "common"
+
+[providers]
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    watch = true
+    exposedByDefault = true
+    swarmMode = false
+
+[api]
+  dashboard = true
+  debug = false
+  insecure = true
+
+[entryPoints]
+  [entryPoints.insecure]
+    address = ":80"
+----
+
+[NOTE]
+====
+Traefik comes with a dashboard available at http://localhost:8080.
+The *8080* port is used for the administration, whereas the *80* port is used for service.
+When Traefik uses the Docker _provider_, the routing configuration is inferred from the labels set on services declared in Docker Compose.
+====
+
+* The the following labels to the *todolist* servive in the *docker-compose.yml* file:
+
+[source,yml]
+----
+labels:
+- "traefik.http.routers.todolist.rule=PathPrefix(`/app`)"
+- "traefik.http.middlewares.todolist.stripPrefix.prefixes=/app"
+- "traefik.http.routers.todolist.middlewares=todolist@docker"
+----
+
+* Start the various containers using the `docker compose up -d` command
+* ✔️ Check that the service is available at http://localhost:80/app/api/todo
+
+[NOTE]
+====
+A same port cannot be listened to by more than one process.
+If a port of the host is fixed in the configuration of a Docker Compose service, this service cannot be scaled using the _replica_ feature.
+====
+
+* Delete the hardcoded port of the host in the *todolist* service in the *docker-compose.yml* file
+* Add the following configuration to the same service so Docker will start 3 instances:
+
+[source,yml]
+----
+deploy:
+  replicas: 3
+----
+
+* Start the various containers using the `docker compose up -d` command
+* ✔️ Check that the *Instance-Id* header takes 3 distinct values, whatever the number of HTTP calls
+* Add and commit the changes
+
+== Part 7 - Database persistence
+
+Until now, the state of the application is stored in memory, so when the application is restarted, every dta is lost.
+Furthermore, when having multiple instances behind a load-balancer, the state appear inconsistent, as it depend on the instance the HTTP request is routed to.
+
+This kinf of application is said _stateful_ (having a state), is not compatible with horizontal scaling.
+
+In this case, we will transform it into a _stateless_ application (having no state), by pushing the state further away.
+
+It exists multiple solutions to share a state between distinct instances (brokers, cache, databases, shared memory API such as Hazelcast, etc.)
+
+In this exercise, we will store the state in a PostgreSQL database.
+
+* Add the following dependencies in the pom.xml file
+
+[source,xml]
+----
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jdbc</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>42.5.0</version>
+</dependency>
+----
+
+* Create a *application.yml* file in the *src/main/resources* directory with the following content:
+
+[source,yml]
+----
+spring:
+  sql.init.mode: always # <1>
+  datasource:
+    url: jdbc:postgresql://localhost:5432,postgres:5432/postgres
+    username: postgres
+    password: example
+----
+<1> Allows to execute the *schema.sql* file at application startup
+
+* Create in the same directory a *schema.sql* file with the following content:
+
+[source,sql]
+----
+CREATE TABLE IF NOT EXISTS todo (
+    id BIGSERIAL PRIMARY KEY,
+    message TEXT,
+    author CHAR(64)
+);
+----
+
+* Create a class `fr.lernejo.todo.TodoEntity` annotated with `@Table("todo")`
+* Add to it 3 fields _publics_ _mutables_
+** `Long id` annotated with `@Id`
+** `String message`
+** `String author`
+
+[NOTE]
+====
+Current persistence libraries (Spring-data, Hibernate, etc.) work with _entities_ which are projections as objects of the data stored in database.
+
+(JPA) Entities, are expected by these libraries to be mutable, and have getters and setters.
+====
+
+* Create an interface `fr.lernejo.todo.TodoRepository` annotated with `@Repository` and extending `CrudRepository<TodoEntity, Long>`
+
+[NOTE]
+====
+Here the _magic_ of Spring will take place, the interface will have an implementation at runtime (no concrete class), and this is possible using a dynamic proxy.
+
+All the methods of this interface allowing standard operations such as saving, deleting, listing, finding by an id, etc. will have a standard behavior without the need to code it.
+
+This is the most advanced implementation of the *Generic DAO* pattern.
+====
+
+* Modify the `TodoListController` class to:
+** Take as constructor parameter an object of type `TodoRepository`
+** Use this repository in the existing methods, instead of the `ArrayList`
+** Delete the `ArrayList` field, that has became useless
+
+* Modify the `docker-compose.yml` file by adding a new service:
+
+[source,yml]
+----
+postgres:
+    image: postgres:14.0-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+----
+
+* Restart the build of the Docker image using `docker compose build`
+* Start the various containers using the `docker compose up -d` command
+* ✔️ Check that the API behaves consistently even if HTTP requests are served by different instances: http://localhost:80/app/api/todo
+* Add and commit the changes
+
+Here is a little architecture schema of the project you just finished:
+
+image::final_architecture.png[align=center]
