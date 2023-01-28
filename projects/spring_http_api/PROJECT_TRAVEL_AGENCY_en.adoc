@@ -1,0 +1,296 @@
+= HTTP API using Spring: production and consumption
+:hardbreaks-option:
+
+Steps marked with ✔️ are verifications that all is working as expected and that you can keep running through the exercise.
+
+The purpose of this project is to build HTTP APIs using JSON serialization:
+
+* production: the code starts an HTTP server which serves specific requests
+* consumption: the code calls a remote HTTP server
+
+We will use:
+
+* *Spring web-mvc* to handle the API from the server side
+* *retrofit* as HTTP client
+
+The theme of this project is to build the website of a travel agency which offers destinations, depending on the temperature difference with the user country.
+
+== Simplified architecture
+
+image::schema_archi_travel_agency.png[]
+
+A second application must be developed. Its purpose will to to supply the average temperature of a country.
+
+== Grading
+
+Grading is affected by various points:
+
+* The project compiles
+* The project starts (method `fr.lernejo.travel.Launcher#main` must start an HTTP server on the 8080 port)
+* The 2 APIs `POST /api/inscription` and `GET /api/travels` described further on:
+** Are available
+** Are in compliance with supplied JSON schemas
+** Are consistent (a call to `GET /api/travels` right after the startup returns an empty list, because `POST /api/inscription` has not been called yet)
+** Behave as expected (a call to `GET /api/travels` returns available *destinations* for the users already registered)
+* The *GIT* history is clean and understandable
+** All commit messages must have an _**intention**_
+** No commits with the same message
+** More information: https://chris.beams.io/posts/git-commit/
+* The code **Style** must allow easy reading
+** Methods must be of 15 lines or less
+** Code must not be minified (-8 penalty)
+** Code must be properly formatted (Ctrl+Alt+l with IJ)
+** Classes must of 80 lines maximum (-1 point de pénalité pour les écarts)
+** No re-assignable fields (all field must be `final`)
+** No static field or method (expect `main`)
+* Continuous Integration is up and running
+* Test coverage is > *80%*
+
+A simple frontend (HTML, CSS, JS) is supplied.
+You are free to modify it as you wish as the grade will not take it into account.
+
+== Part 1 - Repository creation using a template
+
+* On the template page https://github.com/lernejo/travel_agency_template, click on "Use this template"
+* Fill in the repository name: **travel_agency**
+* Check the repository as **private**
+* Create the repository by clicking on "*Create repository from template*"
+* Invite the current teacher as a read-only member
+* Do not forget to update badges (follow
+  -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
+* Clone this new repository using the *SSH URL*
+* The default branch is *main*, and the project will be graded on this branch
+
+[NOTE]
+====
+The supplied code consists of a multi-module Maven project, with two modules being the applications to create (`site` et `prediction-engine`).
+
+The `site` application will start an HTTP server listening on 8080, whereas the second one will listen on 7080.
+====
+
+== Part 2 - JSON HTTP APIs
+
+To make the http://localhost:8080/[frontend] usable, code two APIs in the *site* module:
+
+* `POST /api/inscription` taking as body JSON document consistent with teh following schema:
+
+[source,json]
+----
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "userEmail": {
+            "type": "string",
+            "format": "email"
+        },
+        "userName": {
+            "type": "string"
+        },
+        "userCountry": {
+            "type": "string"
+        },
+        "weatherExpectation": {
+            "type": "string",
+            "enum": [
+                "WARMER",
+                "COLDER"
+            ]
+        },
+        "minimumTemperatureDistance": {
+          "type": "integer",
+          "minimum": 0,
+          "exclusiveMaximum": 40
+        }
+    },
+    "required": [
+        "userEmail",
+        "userName",
+        "userCountry",
+        "weatherExpectation",
+        "minimumTemperatureDistance"
+    ]
+}
+----
+
+For example:
+
+[source,json]
+----
+{
+    "userEmail": "machin@truc.com",
+    "userName": "machin",
+    "userCountry": "France",
+    "weatherExpectation": "WARMER",
+    "minimumTemperatureDistance": 20
+}
+----
+
+* `GET /api/travels?userName={userName}` returning a list of available destinations, consistent with the following schema:
+
+[source,json]
+----
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "country": {
+                "type": "string"
+            },
+            "temperature": {
+                "type": "number"
+            }
+        },
+        "required": [
+            "country",
+            "temperature"
+        ]
+    }
+}
+----
+
+For example:
+
+[source,json]
+----
+[
+    {
+        "name": "Caribbean",
+        "temperature": 32.4
+    },
+    {
+        "name": "Australia",
+        "temperature": 35.1
+    }
+]
+----
+
+Here you can return hardcoded or random data, the definitive behavior will use the *prediction-engine* depicted further on.
+
+* ✔️ the supplied frontend (http://localhost:8080) works with fake data
+
+== Part 3 - Prediction API
+
+The code that loads temperatures for several countries is already present in the *prediction-engine* module.
+
+* Code the HTTP API `GET /api/temperature?country={country}` returning a list of temperatures of the given country over the last 2 days, consistent with the following schema:
+
+[source,json]
+----
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "country": {
+            "type": "string"
+        },
+        "temperatures": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "temperature": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                  "date",
+                  "temperature"
+              ]
+            }
+        }
+    },
+    "required": [
+        "country",
+        "temperatures"
+    ]
+}
+----
+
+For example:
+
+[source,json]
+----
+{
+    "country": "France",
+    "temperatures": [
+        {
+            "date": "2021-12-04",
+            "temperature": 12
+        },
+        {
+            "date": "2021-12-03",
+            "temperature": 7
+        }
+    ]
+}
+----
+
+When the country is not known to the API, it must return the HTTP code 417.
+
+== Part 4 - HTTP client
+
+* Add the following dependency to the *site* module: `com.squareup.retrofit2:retrofit:2.9.0`
+* Create a new interface to query the *prediction-engine* API, use the official documentation: https://square.github.io/retrofit/
+* Add this HTTP client as bean in the Spring context
+** To this end, add a method such as the following in the `Launcher` class (considering that your interface is called `PredictionEngineClient`)
+
+[source,java]
+----
+@Bean
+PredictionEngineClient predictionEngineClient() {
+    Retrofit retrofit = new Retrofit.Builder()
+        .baseUrl("http://localhost:7080/")
+        .build();
+
+    return retrofit.create(PredictionEngineClient.class);
+}
+----
+
+* ✔️ The application (`Launcher#main`) starts without error
+
+== Part 5 - Put all the pieces together
+
+The business of the application is simple, at each query of a user, load the *countries.txt* file available at the root of the classpath and, for every country, query the *prediction-engine* API.
+Compute the temperature average for each country, then filter out those not satisfying to the user criteria (`weatherExpectation` and `minimumTemperatureDistance`).
+
+[NOTE]
+====
+Loading the content of a file in the _classpath_ can be done this way:
+
+[source,java]
+----
+try (InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("myfile.txt")) {
+    String content = new String(resource.readAllBytes(), StandardCharsets.UTF_8);
+    Stream<String> lines = content.lines();
+
+    // ... rest of the code
+}
+----
+====
+
+* In the *site* module, create a new class annotated with `@Service` with methods needed to handle the two APIs data and containing the logic between these two APIs
+** This class will take as constructor parameter an object of type `PredictionEngineClient`
+** This class could be easily tested (with a Unit Test, a test class whose name ends with **Tests**) by creating a mock of `PredictionEngineClient`
+* Use this service as parameter of the *controller* coded in **part 2** and replace the fake data by the use of this service
+* Modify the Integration Test of the *controller* accordingly
+
+* ✔️ The supplied frontend (http://localhost:8080) works as expected, the POC (Proof Of Concept) is complete!
+
+== The End
+
+You can go beyond if you like, mais you will only be graded on whats is previously described.
+The APIs, if you were to change them should stay compatible with the supplied schemas.
+Meaning:
+
+* Fields can be added to answers
+* Optional fields can be added to requests
+* Existing fields must not be removed or renamed

@@ -1,7 +1,7 @@
 = API HTTP avec Spring : production et consommation
 :hardbreaks-option:
 
-Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+Préfixé par ✔️, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 
 Cet exercice a pour but de voir l’utilisation d’API HTTP JSON, en
 
@@ -35,27 +35,32 @@ La notation se découpera en plusieurs parties :
 * L’historique *GIT* lisible et propre
 ** Pas de message de commit sans _**intention**_
 ** Pas de commit successifs avec le même message
-** (-0.5 point de pénalité par commit ne respectant pas ces règles)
 ** Voir cet article pour plus d’information https://chris.beams.io/posts/git-commit/
 * Le **Style** doit permettre de lire le code facilement
 ** Les méthodes doivent faire moins de 15 lignes
-** Les classes moins de 80 lignes (-1 point de pénalité pour les écarts)
-** Pas de champs mutables (tous les champs doivent être marqués final)
+** Le code ne doit pas être minifié (-8 points)
+** Le code doit être correctement formatté (Ctrl+Alt+l sur IJ)
+** Les classes moins de 80 lignes
+** Pas de champs ré-assignables (tous les champs doivent être marqués final)
 ** Pas de champ ou méthode statique (sauf pour la méthode `main`)
 * L’intégration continue est fonctionnelle
-* Les Badges de build et de couverture sont disponibles dans le fichier *README.md*
 * La couverture du code est > *80%*
 
 Un front-end basique (HTML, CSS, JS) vous est fourni.
-Vous êtes libre de le modifier ou même de le remplacer par une technologie de votre choix (vue, preact, etc.).
+Vous êtes libre de le modifier comme vous le voulez.
 La note ne tiendra pas compte de cette partie.
 
 == Partie 0 - Création du dépôt via un template
 
 * Sur la page du template https://github.com/lernejo/travel_agency_template, cliquer sur "Use this template"
 * Renseigner comme nom de dépôt : *travel_agency*
-* Marquer le futur dépôt comme *public*
+* Marquer le futur dépôt comme *private*
 * Créer le dépôt en cliquant sur "Create repository from template"
+* Inviter le professeur actuel comme membre en lecture-seule (pour la correction)
+* N'oubliez pas de mettre à jour les badges, une fois votre repo créé (suivre
+  -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
+* Cloner ce nouveau dépôt en utilisant l'*url SSH*
+* La branche par défaut est la branche *main* c'est celle-ci qui sera évaluée
 
 == Partie 1 - Adaptation de la CI
 
@@ -170,7 +175,7 @@ Par exemple :
 
 Vous pouvez ici retourner des données fixes ou aléatoires, le comportement définitif basé sur l’application *prediction-engine* sera à réaliser par la suite.
 
-* &#x1F4D8; le frontend fourni (http://localhost:8080) fonctionne avec les données simulées
+* ✔️ le frontend fourni (http://localhost:8080) fonctionne avec les données simulées
 
 == Partie 3 - L’API de prédiction
 
@@ -256,7 +261,7 @@ PredictionEngineClient predictionEngineClient() {
 }
 ----
 
-* &#x1F4D8; l’application (`Launcher#main`) démarre sans erreur
+* ✔️ l’application (`Launcher#main`) démarre sans erreur
 
 == Partie 5 - emboiter les pièces du puzzle
 
@@ -281,7 +286,7 @@ Stream<String> lines = content.lines();
 * Utiliser ce service comme paramètre du *controller* codé dans la **partie 2** afin de remplacer le comportement temporaire par le comportement définitif (que vous venez de coder dans la classe *service*)
 * Modifier le test d’intégration du *controller* en conséquence
 
-* &#x1F4D8; le frontend fourni (http://localhost:8080) fonctionne comme attendu, le POC (Proof Of Concept) est fini !
+* ✔️ le frontend fourni (http://localhost:8080) fonctionne comme attendu, le POC (Proof Of Concept) est fini !
 
 == The End
 

@@ -154,6 +154,7 @@ public void myMethod(Object myParam) {
 }
 ----
 <1> Ici la variable `myString` de type String est disponible. On ne rentrera pas dans le `if` si le paramètre donné n'est pas un `String`
+====
 
 
 * Démarrer l’application et vérifier la présence du header *Instance-Id* dans un appel au endpoint *GET*

@@ -156,7 +156,7 @@ public void myMethod(Object myParam) {
 }
 ----
 <1> The `myString` variable is of type `String`. The execution will not go inside the `if` bloc if the given parameter is not a `String`
-
+====
 
 * ✔️ Start the application and check that the *Instance-Id* header is set
 * ✔️ Multiple calls should return the same header, however if the application is restarted, it will change

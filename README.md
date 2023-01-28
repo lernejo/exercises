@@ -11,4 +11,5 @@
 # Projects
 
 * [API HTTP in standard Java (FR)](projects/http_api_fr/EXERCISE.adoc) ~ 6h
-* [API HTTP with Spring (FR)](projects/spring_http_api_fr/EXERCISE.md) ~ 6h
+* [API HTTP with Spring & Retrofit (Matchmaking website) (FR)](projects/spring_http_api/EXERCISE_fr.md) ~ 12h
+* API HTTP with Spring & Retrofit (Travel Agency website) [FR](projects/spring_http_api/PROJECT_TRAVEL_AGENCY_fr.adoc) [EN](projects/spring_http_api/PROJECT_TRAVEL_AGENCY_en.adoc) ~ 12h
