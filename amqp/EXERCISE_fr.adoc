@@ -6,9 +6,9 @@ ifdef::env-github[]
 :note-caption: :information_source:
 endif::[]
 
-Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
+Préfixé par ✔️, des "checkpoints" pour vous aider à vérifier que vous avez tout bon.
 
-L’objectif de cet exercice est de construire une application minimaliste (TODO list), communicant au travers d’un broker de message, RabbitMQ.
+L’objectif de cet exercice est de construire une application minimaliste (chat), communicant au travers d’un broker de message, RabbitMQ.
 
 == Prérequis
 
@@ -20,10 +20,10 @@ L’objectif de cet exercice est de construire une application minimaliste (TODO
 * Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 * Installer Java 17 (cf https://adoptium.net/)
-* &#x1F4D8; Les commandes `javac -version` et `java -version` doivent afficher la version **17**
+* ✔️ Les commandes `javac -version` et `java -version` doivent afficher la version **17**
 
 * Installer Maven (cf https://maven.apache.org/install.html)
-* &#x1F4D8; la commande `mvn -version` doit afficher la version *3.8.6*
+* ✔️ la commande `mvn -version` doit afficher la version *3.8.6*
 
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
@@ -33,8 +33,13 @@ L’objectif de cet exercice est de construire une application minimaliste (TODO
 
 * Sur la page du template https://github.com/lernejo/maven_starter_template, cliquer sur "Use this template"
 * Renseigner comme nom de dépôt : *amqp_training*
-* Marquer le futur dépôt comme *public*
+* Marquer le futur dépôt comme *private*
 * Créer le dépôt en cliquant sur "Create repository from template"
+* Inviter le professeur actuel comme membre en lecture-seule (pour la correction)
+* N'oubliez pas de mettre à jour les badges, une fois votre repo créé (suivre
+  -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)
+* Cloner ce nouveau dépôt en utilisant l'*url SSH*
+* La branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
 
 == Partie 1 - BOM & Dépendances
 
@@ -105,7 +110,7 @@ services:
 ----
 
 * Démarrer le _broker_ avec la commande `docker compose up`
-* Vérifier que le service est bien disponible (http://localhost:15672 guest/guest)
+* ✔️ Vérifier que le service est bien disponible (http://localhost:15672 guest/guest)
 
 == Partie 3 - Listener AMQP
 
@@ -152,7 +157,7 @@ SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, Me
 * Démarre l’application
 * Envoyer un message sur la queue créée par l’application lors de son démarrage à travers l’interface de management de RabbitMQ
 ** Pour cela, ne pas oublier de passer une propriété nommée `content_type` avec la valeur `text/plain`
-* Vérifier que le message apparaît bien dans la console
+* ✔️ Vérifier que le message apparaît bien dans la console
 
 == Partie 4 - Consultation des 10 derniers messages
 
@@ -176,9 +181,9 @@ Nous allons maintenant stocker dans la mémoire de notre application les 10 dern
 * Injecter une instance de cette classe dans `ChatMessageListener` et remplacer l’affichage dans la console par le stockage du message dans le _repository_
 * Créer une classe `ChatMessageController` annotée avec `@RestController`
 * Ajouter dans cette dernière classe une méthode annotée avec `@GetMapping` qui devra retourner la liste des 10 derniers messages en JSON sur l’URL http://localhost:8080/api/message
-* Tester le bon fonctionnement de l’application en envoyant des messages via l’interface de management de RabbitMQ
+* ✔️ Tester le bon fonctionnement de l’application en envoyant des messages via l’interface de management de RabbitMQ
 
-== Partie 5 - Maven multi-module
+== Partie 5 - Projet Maven multi-module
 
 Dans cette partie nous allons transformer le projet Maven mono-module en multi-module.
 Le code écrit jusque-là sera hébergé dans le module *server*.
@@ -187,7 +192,7 @@ Le code écrit jusque-là sera hébergé dans le module *server*.
 ** Clic-droit -> New -> Module -> Maven
 * Y déplacer le code ainsi que la section `<dependencies>` du *pom.xml* racine
 * Remarquer qu’une balise `<packaging>pom</packaging>` est apparue dans le *pom.xml* racine, ainsi qu’une section `<modules>`
-* Lancer la compilation depuis le répertoire racine et vérifier qu’elle finit en succès
+* ✔️ Lancer la compilation depuis le répertoire racine et vérifier qu’elle finit en succès
 
 == Partie 6 - Client AMQP
 
@@ -215,7 +220,7 @@ Celui-ci possède une méthode `convertAndSend(String, String, Object)` qui perm
 Dans notre cas, nous allons utiliser l’_exchange_ par défaut, qui permet d’envoyer un message sur la _queue_ qui a le nom de la _routing-key_ utilisée.
 ====
 
-== Partie 7 - Vérifier l’asynchronisme de la communication
+== Partie 7 - ✔️ Vérifier l’asynchronisme de la communication
 
 Nous avons donc deux applications distinctes qui communiquent au travers d’un broker de message.
 
