@@ -177,7 +177,7 @@ Docker Compose est un ordonnanceur de conteneur, l’idée est de pouvoir pilote
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
-            <version>2.5.5</version>
+            <version>2.7.4</version>
             <executions>
                 <execution>
                     <goals>
