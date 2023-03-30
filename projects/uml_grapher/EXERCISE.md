@@ -48,7 +48,8 @@ La notation se découpera en plusieurs parties :
 
 * Sur la page du template https://github.com/lernejo/maven_starter_template, cliquer sur "Use this template"
 * Renseigner comme nom de dépôt : **uml_grapher**
-* Marquer le futur dépôt comme **public**
+* Marquer le futur dépôt comme **privé**
+* Inviter le professeur actuel comme membre du dépôt (pour la correction)
 * Créer le dépôt en cliquant sur "*Create repository from template"*
 * N'oubliez pas de mettre à jour les badges, une fois votre repo créé (suivre
   -> https://github.com/lernejo/exercises/blob/master/maven_fr/EXERCISE.adoc#partie-6---live-badges)

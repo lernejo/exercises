@@ -28,7 +28,8 @@ Préfixé par &#x1F4D8;, des "checkpoints" pour vous aider à vérifier que vous
 
 == Partie 1 - premier commit
 
-* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom *maven_training* [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Créer un nouveau dépôt Git **privé** sur la plateforme GitHub avec le nom *maven_training* [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Inviter le professeur actuel comme membre du dépôt (pour la correction)
 * Cloner ce nouveau dépôt en utilisant l'*url SSH*
 * La branche par défaut est la branche *main* c'est sur celle-ci que nous allons travailler
 * Ajouter un fichier *.editorconfig* à la racine du dépôt avec le contenu suivant

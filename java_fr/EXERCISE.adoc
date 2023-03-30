@@ -21,7 +21,8 @@ La correction sera automatique, prenez donc soin de respecter les indications le
 
 == Partie 1 - Hello World et compilation
 
-* Créer un nouveau dépôt Git public sur la plateforme GitHub avec le nom **java_exercise_1** [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Créer un nouveau dépôt Git **privé** sur la plateforme GitHub avec le nom **java_exercise_1** [.underline]#initialisé# avec un fichier README.md (case à cocher dans le formulaire de création de dépôt)
+* Inviter le professeur actuel comme membre du dépôt (pour la correction)
 * Cloner ce nouveau dépôt en utilisant l’**url SSH**
 * La branche par défaut est la branche **main** c’est sur celle-ci que nous allons travailler
 * Créer deux répertoires **src** et **bin** qui contiendront respectivement les sources (fichiers *.java) et les fichiers compilés (fichiers *.class)
