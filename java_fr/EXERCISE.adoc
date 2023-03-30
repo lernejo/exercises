@@ -128,7 +128,7 @@ L’objectif est de créer un programme permettant à l’utilisateur de connait
 * Essayer de lire le contenu du fichier grâce à la méthode statique utilitaire `java.nio.file.Files.readString` prenant en paramètre un objet de type `Path`.
 Un tel objet peut être construit grâce à la méthode statique `Paths.get` prenant en paramètre un chemin de fichier
 ** en cas d’échec, afficher le message `"Unreadable file: "` suivi du nom de la classe de l’exception et de son message
-** en cas de succès, afficher les 3 mots les plus fréquents sur une même ligne, un mot étant séparé d’un autre par un espace
+** en cas de succès, afficher sur une même ligne les 3 mots les plus fréquents, un mot étant séparé d’un autre par un espace
 
 [NOTE]
 ====
