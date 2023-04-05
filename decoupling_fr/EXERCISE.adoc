@@ -167,6 +167,7 @@ La méthode `nextRound` devra :
 ** Dans tous les cas, afficher via `logger` les informations permettant de suivre l’évolution de la partie
 
 * La méthode `loopUntilPlayerSucceed` devra utiliser une boucle afin d’appeler `nextRound` jusqu’à ce que la partie soit finie.
+* Quand la partie est finie, afficher un message adéquat (ex: `you won !`, `c'est gagné`, etc.)
 
 * Créer enfin une classe `Launcher` avec une méthode statique `main` qui
 ** Créera une nouvelle instance de `Simulation` avec un joueur `HumanPlayer`
@@ -176,7 +177,7 @@ La méthode `nextRound` devra :
 ----
 SecureRandom random = new SecureRandom();
 // long randomNumber = random.nextLong(); // génère un nombre entre Long.MIN_VALUE et Long.MAX_VALUE
-long random Number = random.nextInt(100); // génère un nombre entre 0 (inclus) et 100 (exclus)
+long randomNumber = random.nextInt(100); // génère un nombre entre 0 (inclus) et 100 (exclus)
 ----
 ** Lancera une partie en appelant la méthode `loopUntilPlayerSucceed`
 
