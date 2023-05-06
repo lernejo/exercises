@@ -1,0 +1,63 @@
+= Java - Implémention partielle de Grep
+:hardbreaks-option:
+
+Ce projet a pour but de mettre en pratique quelques concepts de base en Java, à savoir lecture de fichier, manipulation des collections et chaines de caractères, etc.
+
+Il s'agit de contruire un programme Java qui reproduit quelques-unes des fonctionnalitées de https://fr.wikipedia.org/wiki/Grep[Grep]
+
+== Exigences :
+
+* Packaging Maven
+* Aucune dépendance de scope *compile* ou *runtime*
+* La phase package doit produire une archive JAR auto-exécutable (démarre avec `java -jar grep.jar`)
+* Le projet utilise Junit5 et Assertj afin d'atteindre une couverture par les tests d'au minimum 90%
+* Les méthodes et classes sont concises et bien nommées
+* Le programme doit pouvoir parcourir plusieurs Go de texte sans risquer une `OutOfMemoryException`
+* Aucun fichier inutiles (metadatas en tout genre, code compilés, etc.), utilisez .gitignore !
+
+[NOTE]
+====
+Le but n'est pas uniquement que le code marche, mais qu'il soit beau.
+Il faut que vous soyez content du code que vous écrivez, si vous avez une solution en 20 lignes alors que cela en nécessite 5,
+cela veut dire que vous n'avez pas assez creusé.
+
+La plupart du code disponible sur internet n'est pas écrit par des professionnels, surtout sur les sites francophones,
+donc il ne faut pas recopier sans réfléchir du code sans l'avoir compris et vous être demandé si vraiment il n'y a pas plus simple.
+Utilisez la javadoc, Baeldung ou StackOverflow.
+Faites aussi attention à la date à laquelle un article a été publié, on ne programme pas en Java aujourd'hui comme il y a 10 ans ou 20 ans.
+
+Toute duplication sera sévèrement pénalisée.
+====
+
+== Fonctionnalités :
+
+* Le programme doit pouvoir être lancé
+** sur un répertoire : `java -jar grep.jar 'text to find' /home/jean_michel/workspace`
+** sur un répertoire et ses sous-répertoires : `java -jar grep.jar -R 'text to find' /home/jean_michel/workspace`
+** sur un fichier : `java -jar grep.jar 'text to find' /home/jean_michel/workspace/machin.txt`
+** sur un stream : `cat machin.txt | java -jar grep.jar 'text to find'`
+
+* La sortie du programme doit afficher toutes les lignes contenant le mot cherché sous la forme :
+
+[source]
+----
+/home/jean_michel/workspace/titi.txt L.32 text to find
+/home/jean_michel/workspace/titi.txt L.155 some text to find is behind the wall
+/home/jean_michel/workspace/toto/toto.txt L.74 is this the text to find ?
+----
+
+Dans le cas du mode stream le chemin vers le fichier source sera remplacé par un point `.`.
+
+* Les différents modes stream, fichier, récursif (`-R`) peuvent être composés avec les options :
+** `-B x` affiche les x lignes avant chaque ligne trouvée
+** `-A x` affiche les x lignes après chaque ligne trouvée
+** `-C x` affiche les x lignes avant et après chaque ligne trouvée (équivalent à `-A x -B x`)
+** `-i` rend la recherche non sensible à la casse, c'est-à-dire que chercher `toto` ou `ToTo` revient exactement au même
+** `-c` retournera le nombre d'occurences du texte à trouver (et non le nombre de lignes contenant le texte)
+
+== Rendu :
+
+Le projet est à rendre sous la forme d'un dépôt Git privé sur GitHub dont l'historique sera propre et l'intégration continue fonctionelle.
+Le nom de ce dépôt doit être **grep_java**, et le https://github.com/ledoyen[professeur] doit être invité en tant que membre pour la correction.
+
+Le projet est à rendre pour le Vendredi 26 Mai 20h.
