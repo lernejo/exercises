@@ -16,7 +16,7 @@ Il s’agira d’une API HTTP et le format d’échange des données sera le JSO
 
 Le lieu de la bataille navale est une mer découpée en 10 colonnes et 10 lignes, soit 100 cases.
 Les colonnes sont appelées de A à J, alors que les lignes seront nommées de 1 à 10.
-Ainsi, si la mer est un tableau à deux dimensions, C7 correspondra à `Cell target = sea[6][3]; // 7th row, 3rd col`; 
+Ainsi, si la mer est un tableau à deux dimensions, C7 correspondra à `Cell target = sea[6][2]; // 7th row, 3rd col`; 
 Cette représentation avec un tableau est un exemple, vous êtes libre de représenter le terrain de jeu comme vous l’entendez.
 
 Les joueurs doivent placer avant la partie 5 bateaux sur la mer :
