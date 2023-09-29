@@ -21,10 +21,10 @@ L’objectif de cet exercice est de construire une application web minimaliste (
 * Générer une clé SSH (si absente) et donner la partie publique à GitHub (cf https://help.github.com/articles/connecting-to-github-with-ssh/)
 
 * Installer Java 17 (cf https://adoptium.net/)
-* ✔️ Les commandes `javac -version` et `java -version` doivent afficher la version **17**
+* ✔️ Les commandes `javac -version` et `java -version` doivent afficher la version **21**
 
 * Installer Maven (cf https://maven.apache.org/install.html)
-* ✔️ la commande `mvn -version` doit afficher la version *3.8.6*
+* ✔️ la commande `mvn -version` doit afficher la version *3.9.4*
 
 * Installer IntelliJ Community (cf https://www.jetbrains.com/fr-fr/idea/download)
 
