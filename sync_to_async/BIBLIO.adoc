@@ -1,0 +1,10 @@
+* Docker best practices
+** https://github.com/docker/docker.github.io/blob/master/develop/develop-images/dockerfile_best-practices.md
+* Monitoring RabbitMQ with Prom
+** https://www.rabbitmq.com/prometheus.html
+** https://github.com/rabbitmq/rabbitmq-server/tree/master/deps/rabbitmq_prometheus/docker
+
+* Compose Networking with host network
+https://forums.docker.com/t/localhost-and-docker-compose-networking-issue/23100/5
+-> host.docker.internal
+
