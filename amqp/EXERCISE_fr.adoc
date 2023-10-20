@@ -200,7 +200,7 @@ Nous allons maintenant coder un client AMQP afin de pouvoir envoyer les messages
 
 * Créer un nouveau module *client* (*[.underline]#à côté#* du module *server*)
 * Dans le *pom.xml* de ce module, ajouter la dépendance vers le *starter-amqp* de *spring-boot*
-* Dans le package `fr.lernejo.chat` créer une classe `Launcher` annotée avec `SpringBootApplication`
+* Dans le package `fr.lernejo.chat` de ce module créer une classe `Launcher` annotée avec `SpringBootApplication`
 * Y ajouter une fonction `main` qui devra boucler sur l’entrée standard et envoyer le  message à chaque retour chariot de l’utilisateur, comme ceci :
 
 image::amqp_client.gif[]
